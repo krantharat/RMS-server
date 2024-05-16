@@ -5,6 +5,7 @@ const express = require("express"),
     morgan = require('morgan'),
     cors = require("cors"),
     scheduleRouter = require('./src/Routers/schedule.router');
+    userRouter = require('./src/Routers/userRouter')
 
 require('dotenv').config();
 
@@ -30,6 +31,7 @@ const PORT = process.env.PORT || 5000;
 
 //router
 app.use("/api/schedule", scheduleRouter);
+app.use("/api/user", userRouter);
 
 //port listen
 app.listen(PORT, function () {

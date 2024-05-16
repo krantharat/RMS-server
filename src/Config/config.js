@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const url = "mongodb+srv://tenniskrtrkyung:Tennis2002_@cluster0.v2l5lcl.mongodb.net/";
+const url = "mongodb+srv://tenniskrtrkyung:Tennis2002_@cluster0.v2l5lcl.mongodb.net/RMS-data";
 module.exports = {
     connection: mongoose
         .connect(url)
