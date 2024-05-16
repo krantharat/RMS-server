@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 });
 
 
-router.post("/schedule/addSchedule",addSchedule);
+router.post("/addSchedule",addSchedule);
 
 
 module.exports = router;
