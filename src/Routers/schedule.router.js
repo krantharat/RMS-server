@@ -1,14 +1,14 @@
 const express = require("express")
 const router = express.Router();
-const {addSchedule} = require('../Controller/schedule/addschedule')
+const {addSchedule} = require('../Controller/schedule.controller')
 
-//main page?
 router.get("/", (req, res) => {
     res.send({
         message: "this is admin router",
     });
 });
 
-router.post("/schedule/addschedule",addSchedule);
+
+router.post("/schedule/addSchedule",addSchedule);
 
 module.exports = router;

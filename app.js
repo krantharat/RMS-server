@@ -1,10 +1,10 @@
-
 const express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
     methodOverride = require("method-override"),
     morgan = require('morgan'),
-    cors = require("cors");
+    cors = require("cors"),
+    scheduleRouter = require('./src/Routers/schedule.router');
 
 require('dotenv').config();
 
@@ -18,14 +18,18 @@ const corsOptions = {
 
 // app use
 app.use(methodOverride("_method"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan('dev'))
+
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
 //port 
 const PORT = process.env.PORT || 5000;
 
-//router
 
+//router
+app.use("/api/schedule", scheduleRouter);
 
 //port listen
 app.listen(PORT, function () {
