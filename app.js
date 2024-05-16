@@ -1,14 +1,14 @@
-const morgan = require('morgan');
 
 const express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
     methodOverride = require("method-override"),
+    morgan = require('morgan'),
     cors = require("cors");
 
 require('dotenv').config();
 
-require("./Config/config").connection;
+require('./src/Config/config').connection;
 
 
 const corsOptions = {
@@ -23,6 +23,8 @@ app.use(cors(corsOptions));
 
 //port 
 const PORT = process.env.PORT || 5000;
+
+//router
 
 
 //port listen
