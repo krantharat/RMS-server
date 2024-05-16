@@ -27,7 +27,6 @@ app.use(cors(corsOptions));
 //port 
 const PORT = process.env.PORT || 5000;
 
-
 //router
 app.use("/api/schedule", scheduleRouter);
 
