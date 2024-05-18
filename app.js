@@ -10,6 +10,7 @@ const scheduleRouter = require('./src/Routers/schedule.router');
 const userRouter = require('./src/Routers/userRouter');
 const menuRouter = require('./src/Routers/menu.router');
 const summaryRouter = require('./src/Routers/summary.router');
+const employeeRouter = require('./src/Routers/employee.router')
 
 require('dotenv').config();
 
@@ -44,6 +45,7 @@ app.use("/api/schedule", scheduleRouter);
 app.use("/api/user", userRouter);
 app.use("/api/menu", menuRouter);
 app.use("/api/summary", summaryRouter);
+app.use("/api/employee", employeeRouter)
 
 //port listen
 app.listen(PORT, function () {

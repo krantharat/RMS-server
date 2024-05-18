@@ -19,7 +19,8 @@ const Menu = new mongoose.Schema({
         required: true
     },
     menuCategory: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Category",
         required: true
     },
     price: {

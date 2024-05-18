@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 // Category part
 const CategoryModel = require("../Models/menu.model")
 const createCategory = async (req, res) => {
@@ -56,10 +58,10 @@ const allMenu = async (req, res) => {
 const searchMenu = async (req, res) => {
     try {
         const menu = await MenuModel.find();
-        const id = req.params.id
+        const {name} = req.query
     
         // หา menu จาก id ที่ส่งมา 
-        const selectedIndex = menu.findIndex(menu => menu.id == id)
+        const selectedIndex = menu.findIndex(menu => menu.menuName == name)
     
         res.json(menu[selectedIndex])
 
@@ -107,8 +109,8 @@ const editMenu = async (req, res) => {
 // 
 const deleteMenu = async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        const deletedMenu = await MenuModel.findOneAndDelete({ id: id });
+        const id = req.params.id;
+        const deletedMenu = await MenuModel.findByIdAndDelete(id)
         if (!deletedMenu) {
             return res.status(404).json({ message: 'Menu not found' });
         }

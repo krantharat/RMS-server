@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const scheduleSchema = new mongoose.Schema({
+const schedule = new mongoose.Schema({
     // ScheduleId: {
     //     type: Number,
     //     required: true
@@ -25,6 +25,6 @@ const scheduleSchema = new mongoose.Schema({
 
 });
 
-const Schedule = mongoose.model('Schedule',scheduleSchema)
+const Schedule = mongoose.model('Schedule',schedule)
 
 module.exports = Schedule;

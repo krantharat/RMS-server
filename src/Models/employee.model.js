@@ -1,0 +1,76 @@
+const mongoose = require('mongoose');
+
+// Gender Schema
+const Gender = new mongoose.Schema({
+    genderType: {
+        type: String,
+        required: true
+    },
+});
+
+const GenderModel = mongoose.model('Gender',Gender) 
+module.exports = GenderModel;
+
+
+// Position Schema
+const Position = new mongoose.Schema({
+    position: {
+        type: String,
+        required: true
+    }
+});
+
+const PositionModel = mongoose.model('Position',Position) 
+module.exports = PositionModel;
+
+// Employee Schema
+const Employee = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
+    nickName: {
+        type: String,
+        required: true
+    },
+    position: {
+        type: String,
+        required: true
+    },
+    dateOfBirth: {
+        type: String,
+        required: true
+    },
+    gender: {
+        type: String,
+        required: true
+    },
+    identificationNumber: {
+        type: Number,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: Number,
+        required: true
+    },
+    startDate: {
+        type: String,
+        required: true
+    },
+});
+
+const EmployeeModel = mongoose.model('Employee',Employee) 
+
+module.exports = EmployeeModel;
