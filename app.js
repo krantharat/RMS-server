@@ -7,8 +7,9 @@ const express = require("express"),
 
 // import router root
 const scheduleRouter = require('./src/Routers/schedule.router');
-const userRouter = require('./src/Routers/userRouter')
+const userRouter = require('./src/Routers/userRouter');
 const menuRouter = require('./src/Routers/menu.router');
+const summaryRouter = require('./src/Routers/summary.router');
 
 require('dotenv').config();
 
@@ -41,7 +42,8 @@ app.get("/", (req, res) => {
 //router
 app.use("/api/schedule", scheduleRouter);
 app.use("/api/user", userRouter);
-app.use("/api/menu", menuRouter)
+app.use("/api/menu", menuRouter);
+app.use("/api/summary", summaryRouter);
 
 //port listen
 app.listen(PORT, function () {

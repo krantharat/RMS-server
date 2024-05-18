@@ -1,6 +1,12 @@
 const express = require("express")
 const router = express.Router();
-const {addBill} = require('../Controller/summary.controller')
+const {addBill, editBill, getAllBill, deleteBill, getBillById} = require('../Controller/summary.controller')
 
-router.post("/addBill",addBill);
+//router
+router.post("/addBill", addBill);
+router.put("/editBill", editBill);
+router.delete("/deleteBill", deleteBill);
+router.get("/getAllBill", getAllBill);
+router.get("/getBillById/:id", getBillById)
+
 module.exports = router;
