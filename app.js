@@ -4,8 +4,9 @@ const express = require("express"),
     methodOverride = require("method-override"),
     morgan = require('morgan'),
     cors = require("cors"),
-    scheduleRouter = require('./src/Routers/schedule.router');
-    userRouter = require('./src/Routers/userRouter')
+    scheduleRouter = require('./src/Routers/schedule.router'),
+    userRouter = require('./src/Routers/userRouter'),
+    summaryRouter = require('./src/Routers/summary.router');
 
 require('dotenv').config();
 
@@ -31,6 +32,7 @@ const PORT = process.env.PORT || 5000;
 //router
 app.use("/api/schedule", scheduleRouter);
 app.use("/api/user", userRouter);
+app.use("/api/summary", summaryRouter);
 
 //port listen
 app.listen(PORT, function () {

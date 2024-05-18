@@ -2,10 +2,19 @@ const ScheduleModel = require('../Models/schedule.model');
 
 const addSchedule = async (req, res) =>  {
     try {
-        const employees = await ScheduleModel.findOne({ genre: genre }).populate("movie_id");
+        const {date, startTime, endTime} = req.body;
+        const schedule = new ScheduleModel({
+            date: date,
+            startTime: startTime,
+            endTime: endTime
+        });
+        await schedule.save();
+        res.json({
+            message: 'add ok',
+            schedule: schedule
+        })
     } catch (error) { 
-        console.log(error);
-        
+        res.status(500).send(error.message);
     }
 };
 module.exports = { addSchedule };

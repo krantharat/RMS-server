@@ -11,20 +11,20 @@ const scheduleSchema = new mongoose.Schema({
     //     required: true
     // },
     date: {
-        type: Date,
+        type: String,
         required: true
     },
     startTime: {
-        type: Date,
+        type: String,
         required: true
     },
     endTime: {
-        type: Date,
+        type: String,
         required: true
     },
 
 });
 
-const ScheduleModel = mongoose.model('Schedule',scheduleSchema) // User Model
+const Schedule = mongoose.model('Schedule',scheduleSchema)
 
-module.exports = ScheduleModel;
+module.exports = Schedule;
