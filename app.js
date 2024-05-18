@@ -3,10 +3,12 @@ const express = require("express"),
     bodyParser = require("body-parser"),
     methodOverride = require("method-override"),
     morgan = require('morgan'),
-    cors = require("cors"),
-    scheduleRouter = require('./src/Routers/schedule.router'),
-    userRouter = require('./src/Routers/userRouter'),
-    summaryRouter = require('./src/Routers/summary.router');
+    cors = require("cors")
+
+// import router root
+const scheduleRouter = require('./src/Routers/schedule.router');
+const userRouter = require('./src/Routers/userRouter')
+const menuRouter = require('./src/Routers/menu.router');
 
 require('dotenv').config();
 
@@ -29,10 +31,17 @@ app.use(cors(corsOptions));
 //port 
 const PORT = process.env.PORT || 5000;
 
+// api test
+app.get("/", (req, res) => {
+    res.send({
+        message: "this is homepage",
+    });
+});
+
 //router
 app.use("/api/schedule", scheduleRouter);
 app.use("/api/user", userRouter);
-app.use("/api/summary", summaryRouter);
+app.use("/api/menu", menuRouter)
 
 //port listen
 app.listen(PORT, function () {
