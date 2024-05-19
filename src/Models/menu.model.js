@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
-// Category Schema
-const Category = new mongoose.Schema({
-    categoryName: {
+// Menu Category Schema
+const menuCategory = new mongoose.Schema({
+    menuCategoryName: {
         type: String,
         required: true
     },
 });
 
-const CategoryModel = mongoose.model('Category',Category) 
-module.exports = CategoryModel;
+const MenuCategoryModel = mongoose.model('MenuCategory',menuCategory) 
+module.exports = MenuCategoryModel;
 
 
 // Menu Schema
@@ -20,7 +20,7 @@ const Menu = new mongoose.Schema({
     },
     menuCategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"Category",
+        ref:"MenuCategory",
         required: true
     },
     price: {

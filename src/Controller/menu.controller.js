@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 
-// Category part
-const CategoryModel = require("../Models/menu.model")
-const createCategory = async (req, res) => {
+// Menu category part
+const MenuCategoryModel = require("../Models/menu.model")
+const createMenuCategory = async (req, res) => {
     try {
-        const categoryData = req.body
-        const category = new CategoryModel({
-            categoryName: categoryData.categoryName,
+        const menuCategoryData = req.body
+        const menuCategory = new MenuCategoryModel({
+            menuCategoryName: menuCategoryData.menuCategoryName,
         })
-        await category.save()
+        await menuCategory.save()
 
         res.json({
-            message: 'add category complete',
-            category: category
+            message: 'add menu category complete',
+            menuCategory: menuCategory
         })
     } catch (err) {
         res.status(500).send(err.message);
@@ -45,7 +45,8 @@ const createMenu = async (req, res) => {
 // ดู Menu ทั้งหมด
 const allMenu = async (req, res) => {
     try {
-        const menu = await MenuModel.find();
+        const menu = await MenuModel.find()
+        .populate('menuCategory')
     
         res.json(menu);
   
@@ -57,7 +58,9 @@ const allMenu = async (req, res) => {
 // ดู Menu รายอัน by name
 const searchMenu = async (req, res) => {
     try {
-        const menu = await MenuModel.find();
+        const menu = await MenuModel.find()
+        .populate('menuCategory')
+        
         const {name} = req.query
     
         // หา menu จาก id ที่ส่งมา 
@@ -124,7 +127,7 @@ const deleteMenu = async (req, res) => {
 }
 
 module.exports = {
-    createCategory,
+    createMenuCategory,
     createMenu,
     allMenu,
     searchMenu,
