@@ -54,7 +54,7 @@ const allMenu = async (req, res) => {
       }
 }
     
-// ดู Menu รายอัน
+// ดู Menu รายอัน by name
 const searchMenu = async (req, res) => {
     try {
         const menu = await MenuModel.find();
@@ -78,7 +78,7 @@ const editMenu = async (req, res) => {
 
         // Find the menu by id and update with the new data
         const updatedMenu = await MenuModel.findOneAndUpdate(
-            { _id: id }, // Use _id for MongoDB document ID
+            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
             {
                 $set: {
                     menuName: updateMenu.menuName,
@@ -106,11 +106,11 @@ const editMenu = async (req, res) => {
     }
 };
 
-// 
+// ลบ Menu
 const deleteMenu = async (req, res) => {
     try {
-        const id = req.params.id;
-        const deletedMenu = await MenuModel.findByIdAndDelete(id)
+        const id = req.params.id; // รับข้อมูลมาเป็น String
+        const deletedMenu = await MenuModel.findByIdAndDelete(id) // fundById จะแปลง String -> ObjectId ให้อัตโนมัติ
         if (!deletedMenu) {
             return res.status(404).json({ message: 'Menu not found' });
         }
@@ -122,21 +122,6 @@ const deleteMenu = async (req, res) => {
         res.status(500).send(err.message);
     }
 }
-
-// แบบ fluk
-// try {
-//     const { MenuID } = req.query;
-//     const menu = await MenuModel.findById(MenuID);
-//     if (menu) {
-        // Delete the menu
-//         await menu.deleteOne();
-//         res.status(200).json({ message: "Menu deleted successfully" });
-//     } else {
-//         res.status(404).json({ message: "Menu not found 2" });
-//     }
-//  } catch (err) {
-//     res.status(500).send(err.message);
-//  }
 
 module.exports = {
     createCategory,

@@ -19,4 +19,8 @@ router.get("/allEmployee", employeeController.allEmployee);
 
 router.get('/searchEmployee/:id', employeeController.searchEmployee);
 
+router.put('/editEmployee/:id', employeeController.editEmployee);
+
+router.delete('/deleteEmployee/:id', employeeController.deleteEmployee);
+
 module.exports = router;
