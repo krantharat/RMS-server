@@ -38,7 +38,8 @@ const Employee = new mongoose.Schema({
         required: true
     },
     position: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Position",
         required: true
     },
     dateOfBirth: {
@@ -46,7 +47,8 @@ const Employee = new mongoose.Schema({
         required: true
     },
     gender: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Gender",
         required: true
     },
     identificationNumber: {

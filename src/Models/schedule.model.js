@@ -1,17 +1,33 @@
 const mongoose = require('mongoose');
 
-const schedule = new mongoose.Schema({
-    // ScheduleId: {
-    //     type: Number,
-    //     required: true
-    // },
-    // employeeId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Employee",
-    //     required: true
-    // },
+
+//position for schedule page
+// const PositionShift = new mongoose.Schema({
+//     positionShift: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Position",
+//         required: true
+//     }
+// });
+
+// const PositionShiftModel = mongoose.model('PositionShift',PositionShift) 
+// module.exports = PositionShiftModel;
+
+
+//other detail
+const Schedule = new mongoose.Schema({
+    employee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Employee", 
+        required: true
+    },
+    position: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Position",
+        required: true
+    },
     date: {
-        type: String,
+        type: Date,
         required: true
     },
     startTime: {
@@ -22,9 +38,13 @@ const schedule = new mongoose.Schema({
         type: String,
         required: true
     },
+    note: {
+        type: String,
+        required: false //optional
+    }
 
 });
 
-const Schedule = mongoose.model('Schedule',schedule)
+const ScheduleModel = mongoose.model('Schedule',Schedule)
 
-module.exports = Schedule;
+module.exports = ScheduleModel;

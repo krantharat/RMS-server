@@ -1,40 +1,40 @@
 const mongoose = require('mongoose');
 
-const summarySchema = new mongoose.Schema({
-    orderId: {
-        type: Number,
-        required: true
-    },
-    menuId: {
+const Summary = new mongoose.Schema({
+
+    menu: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Menu",
         require: true
     },
-    categoryId: {
+    category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
         require: true
     },
     date: {
         type: String,
-        require: true
+        require: true,
+        default: Date.now
     },
     qty: {
         type: Number,
         require: true
     },
     price: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "",
+        type: Number,
         require: true
     },
     cost: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "",
+        type: Number,
+        require: true
+    },
+    amount: {
+        type: Number,
         require: true
     }
 });
 
-const Summary = mongoose.model('Summary',summarySchema)
+const SummaryModel = mongoose.model('bill',Summary)
 
-module.exports = Summary;
+module.exports = SummaryModel;
