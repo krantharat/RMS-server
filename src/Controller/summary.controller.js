@@ -126,7 +126,7 @@ const searchDate = async (req,res) => {
 
         const selectedIndex = billDate.findIndex(billDate => billDate.date == date)
 
-        res.json(menu[selectedIndex])
+        res.json(date[selectedIndex])
 
     }catch (err) {
         res.status(500).send(err.message);

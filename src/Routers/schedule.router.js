@@ -1,15 +1,12 @@
 const express = require("express")
 const router = express.Router();
-const {addSchedule} = require('../Controller/schedule.controller')
+const { addShift, editShift, getShiftForWeek } = require('../Controller/schedule.controller')
 
-router.get("/", (req, res) => {
-    res.send({
-        message: "this is admin router",
-    });
-});
-
-
-router.post("/addSchedule",addSchedule);
+//router
+// router.post("/addPosition", addPosition);
+router.post("/addShift", addShift);
+router.put("/editShift/:id", editShift);
+router.get("/getDate", getShiftForWeek);
 
 
 module.exports = router;

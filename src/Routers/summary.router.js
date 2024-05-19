@@ -4,7 +4,7 @@ const {addBill, editBill, getAllBill, deleteBill, getBillById, searchMenu, searc
 
 //router
 router.post("/addBill", addBill);
-router.put("/editBill", editBill);
+router.put("/editBill/:id", editBill);
 router.delete("/deleteBill", deleteBill);
 router.get("/getAllBill", getAllBill);
 router.get("/getBillById/:id", getBillById);
