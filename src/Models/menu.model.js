@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 
 // Menu Category Schema
-const menuCategory = new mongoose.Schema({
+const MenuCategory = new mongoose.Schema({
     menuCategoryName: {
         type: String,
         required: true
     },
 });
 
-const MenuCategoryModel = mongoose.model('MenuCategory',menuCategory) 
+const MenuCategoryModel = mongoose.model('MenuCategory',MenuCategory) 
 module.exports = MenuCategoryModel;
 
 
-// Menu Schema
+//Menu Schema
 const Menu = new mongoose.Schema({
     menuName: {
         type: String,
