@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/createCategory", menuController.createCategory);
+router.post("/createMenuCategory", menuController.createMenuCategory);
 
 router.post("/createMenu", menuController.createMenu);
 
