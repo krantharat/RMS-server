@@ -1,19 +1,23 @@
 const SummaryModel = require('../Models/summary.model');
+const MenuModel = require('../Models/menu.model');
 
-//สร้างบิลใหม่
+//create new bill
 
 const addBill = async (req,res) => {
     try{
-        const {orderId, menuId, categoryId, qty} = req.body;
+        const { menu, category, qty, cost, price, date, amount} = req.body;
         const order = new SummaryModel ({
-            orderId : orderId,
-            menuId : menuId,
-            categoryId : categoryId,
-            qty : qty
+            menu : menu,
+            category : category,
+            qty : qty,
+            cost : cost,
+            price : price,
+            date : date,
+            amount : amount
         });
         await order.save();
         res.json({
-            message: 'order added success',
+            message: 'order added successfully',
             order : order
         })
 
@@ -22,62 +26,45 @@ const addBill = async (req,res) => {
     }
 }
 
-//แก้ไขออเดอร์ในบิลแต่ละบิล
+//edit order each bill
 
-const editBill = async (req,res) => {
-    try{
-        const id = new mongoose.Types.ObjectId(req.params.id);
-        const { menuId, categoryId, qty} = req.body;
-        await SummaryModel.updateOne({ _id : id}, {$set: {
-            menuId: menuId,
-            categoryId: categoryId,
-            qty:qty
-        }});
-        res.status(200).json({ message: "bill Updated Successfully" });
+const editBill = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { menuId, categoryId, qty, cost, price, date, amount } = req.body;
 
-    }catch (error) { 
+        const updatedBill = await SummaryModel.findByIdAndUpdate(
+            id,
+            { menuId, categoryId, qty, cost, price, date, amount },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedBill) {
+            return res.status(404).json({ message: "Bill not found" });
+        }
+
+        res.json({
+            message: 'Bill updated successfully',
+            bill: updatedBill
+        });
+    } catch (error) {
         res.status(500).send(error.message);
     }
-}
+};
 
-// or use findOneAndUpdate
-// const editBill = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const { menuId, categoryId, qty } = req.body;
-
-//         const updatedBill = await SummaryModel.findOneAndUpdate(
-//             { _id: mongoose.Types.ObjectId(id) },
-//             {
-//                 $set: {
-//                     menuId: menuId,
-//                     categoryId: categoryId,
-//                     qty: qty
-//                 }
-//             },
-//             { new: true }  **returns the updated document**
-//         );
-
-//         if (!updatedBill) {
-//             return res.status(404).json({ message: "Bill not found" });
-//         }
-
-//         res.status(200).json({ message: "Bill updated successfully", updatedBill });
-//     } catch (error) {
-//         res.status(500).send(error.message);
-//     }
-// };
-// example RAW {
-//     "menuId": "60d21b4667d0d8992e610c86",
-//     "categoryId": "60d21b4667d0d8992e610c87",
-//     "qty": 3
-// }
-
-//ลบบิลแต่ละบิล
+//delete each bill
 
 const deleteBill = async (req,res) => {
-    try{
-
+    try {
+        const {id} = req.params;
+        const deleteBill = await SummaryModel.findByIdAndDelete(id)
+        if (!deleteBill) {
+            return res.status(404).json({ message: 'Bill not found'})
+        }
+        res.json({
+            message: 'Bill deleted successfully',
+            bill : deleteBill
+        });
     }catch (error) { 
         res.status(500).send(error.message);
     }
@@ -99,18 +86,52 @@ const getAllBill = async (req, res) => {
 
 const getBillById = async (req, res) => {
     try {
-        const { billId } = req.params;
-        const bill = await SummaryModel.findById(billId)
-        //populate ดึงข้อมูล
-            // .populate("OwnerID")
-            // .populate({ path: "Comments", populate: { path: "OwnerID" } });
+        const { id } = req.params;
+        const bill = await SummaryModel.findById(id)
+            .populate("menu")
+            .populate("category");
+
+        if (!bill) {
+            return res.status(404).json({ message: "Bill not found" });
+        }
+
         res.status(200).json(bill);
- 
 
     } catch (err) {
         res.status(500).send(err.message);
     }
 }
 
+//search menu
+const searchMenu = async (req,res) => {
+    try {
+        const menu = await MenuModel.find();
+        const {name} = req.query
 
-module.exports = { addBill, editBill, deleteBill, getAllBill, getBillById };
+        const selectedIndex = menu.findIndex(menu => menu.menuName == name)
+
+        res.json(menu[selectedIndex])
+
+
+    }catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+//search date
+const searchDate = async (req,res) => {
+    try {
+        const billDate = await SummaryModel.find();
+        const {date} = req.query
+
+        const selectedIndex = billDate.findIndex(billDate => billDate.date == date)
+
+        res.json(menu[selectedIndex])
+
+    }catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+
+module.exports = { addBill, editBill, deleteBill, getAllBill, getBillById, searchMenu, searchDate };
