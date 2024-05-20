@@ -5,17 +5,10 @@ const PositionModel = require('../Models/employee.model');
 //create shift
 const addShift = async (req, res) =>  {
     try {
-        const { nickname, date, startTime, endTime, position, note } = req.body;
-        
-        // search Employee by use nickname
-        const employee = await EmployeeModel.findOne({ nickName: nickname });       
-        if (!employee) {
-            return res.status(404).json({ message: 'Employee not found' });
-        }
+        const { employee, date, startTime, endTime, position, note } = req.body;
 
-        // create Schedule by use ObjectId ของ Employee ที่พบ
         const schedule = new ScheduleModel({
-            employee: employee._id,
+            employee: employee,
             date: date, //date: new Date(date)
             startTime: startTime,
             endTime: endTime,
@@ -36,31 +29,18 @@ const addShift = async (req, res) =>  {
 const editShift = async (req,res) => {
     try {
         const { id } = req.params;
-        const { nickname, date, startTime, endTime, position, note } = req.body;
-
-        // ค้นหา _id ของพนักงานที่ตรงกับ nickname
-        const employee = await EmployeeModel.findOne({ nickName: nickname });       
-        if (!employee) {
-            return res.status(404).json({ message: "Employee not found" });
-        }
-
-        //find _id of role ที่ตรงกับ position
-        const role = await PositionModel.findOne({ position: position });
-        position
-        if (!role) {
-            return res.status(404).json({ message: "Position not found" });
-        }
-
+        const updateShift = req.body;
         const updatedShift = await ScheduleModel.findByIdAndUpdate(
-            id,
-            {
-                employee: employee._id, // use _id of employee
-                date,
-                startTime,
-                endTime,
-                position: role._id, // use _id of role
-                note
+            { _id: id },{
+                $set: {
+                    employee: updateShift.employee,
+                    date: updateShift.date,
+                    startTime: updateShift.startTime,
+                    endTime: updateShift.endTime,
+                    note: updateShift.note,
+                }
             },
+            
             { new: true, runValidators: true }
         );
 
@@ -69,14 +49,15 @@ const editShift = async (req,res) => {
         }
         res.json({
             message: 'Shift updated successfully',
-            Shift: updatedShift
+            Shift: updateShift
         });
 
     } catch (error) { 
         res.status(500).send(error.message);
     }
 };
-//get date (range of date)
+
+//get date (range of date) (not finish)
 const getShiftForWeek = async (req,res) => {
     try {
         const { startDate } = req.query;
@@ -103,7 +84,52 @@ const getShiftForWeek = async (req,res) => {
         res.status(500).send(error.message);
     }
 };
-//getAllSchedule
+
+//getAllShift
+const getAllShift = async (req, res) => {
+    try {
+        const shift = await ScheduleModel.find();
+    
+        res.json(shift);
+  
+      } catch (err) {
+          res.status(500).send(err.message);
+      }
+};
+
 //getScheduleById
+const getShiftById = async (req,res) => {
+    try {
+        const shift = await ScheduleModel.find()
+        .populate('employee')
+        .populate('position');
+
+        const id = req.params.id
+    
+        const selectedIndex = shift.findIndex(shift => shift.id == id)
+    
+        res.json(shift[selectedIndex])
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
 //delete
-module.exports = { addShift, editShift, getShiftForWeek };
+const deleteShift = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const deleteShift = await ScheduleModel.findByIdAndDelete(id)
+        if (!deleteShift) {
+            return res.status(404).json({ message: 'Shift not found'})
+        }
+        res.json({
+            message: 'Shift deleted successfully',
+            shift : deleteShift
+        });
+
+    }catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+module.exports = { addShift, editShift, getShiftForWeek, getAllShift, getShiftById, deleteShift };
