@@ -22,7 +22,7 @@ const IngredientCategory = new mongoose.Schema({
 const IngredientCategoryModel = mongoose.model('IngredientCategory',IngredientCategory) 
 module.exports = IngredientCategoryModel;
 
-// Ingredient Schema
+// Ingredient Schema   
 const Ingredient = new mongoose.Schema({
     ingredientName: {
         type: String,

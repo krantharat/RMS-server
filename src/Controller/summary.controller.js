@@ -59,7 +59,6 @@ const editBill = async (req, res) => {
 };
 
 //delete each bill
-
 const deleteBill = async (req,res) => {
     try {
         const {id} = req.params;
@@ -77,7 +76,6 @@ const deleteBill = async (req,res) => {
 }
 
 //ดูบิลทั้งหมด
-
 const getAllBill = async (req, res) => {
     try {
         const bill = await SummaryModel.find();
@@ -88,8 +86,8 @@ const getAllBill = async (req, res) => {
           res.status(500).send(err.message);
       }
 }
-//ดูบิลแต่ละอัน
 
+//ดูบิลแต่ละอัน
 const getBillById = async (req, res) => {
     try {
         const { id } = req.params;

@@ -4,7 +4,7 @@ const Summary = new mongoose.Schema({
 
     menu: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Menu",
+        ref: "Menu", 
         require: true
     },
     category: {
