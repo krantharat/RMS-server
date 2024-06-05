@@ -2,7 +2,6 @@ const SummaryModel = require('../Models/summary.model');
 const MenuModel = require('../Models/menu.model');
 
 //create new bill
-
 const addBill = async (req,res) => {
     try{
         const { menu, category, qty, cost, price, date, amount} = req.body;
@@ -27,25 +26,32 @@ const addBill = async (req,res) => {
 }
 
 //edit order each bill
-
 const editBill = async (req, res) => {
     try {
         const { id } = req.params;
-        const { menuId, categoryId, qty, cost, price, date, amount } = req.body;
-
-        const updatedBill = await SummaryModel.findByIdAndUpdate(
-            id,
-            { menuId, categoryId, qty, cost, price, date, amount },
+        const updateBill = req.body;
+        const updatedBill = await ScheduleModel.findByIdAndUpdate(
+            { _id: id },{
+                $set: {
+                    menu: updateBill.menu,
+                    category: updateBill.category,
+                    qty: updateBill.qty,
+                    cost: updateBill.cost,
+                    price: updateBill.price,
+                    date: updateBill.date,
+                    amount: updateBill.amount
+                }
+            },
+            
             { new: true, runValidators: true }
         );
 
         if (!updatedBill) {
             return res.status(404).json({ message: "Bill not found" });
         }
-
         res.json({
             message: 'Bill updated successfully',
-            bill: updatedBill
+            bill: updateBill
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -53,7 +59,6 @@ const editBill = async (req, res) => {
 };
 
 //delete each bill
-
 const deleteBill = async (req,res) => {
     try {
         const {id} = req.params;
@@ -71,7 +76,6 @@ const deleteBill = async (req,res) => {
 }
 
 //ดูบิลทั้งหมด
-
 const getAllBill = async (req, res) => {
     try {
         const bill = await SummaryModel.find();
@@ -82,8 +86,8 @@ const getAllBill = async (req, res) => {
           res.status(500).send(err.message);
       }
 }
-//ดูบิลแต่ละอัน
 
+//ดูบิลแต่ละอัน
 const getBillById = async (req, res) => {
     try {
         const { id } = req.params;
