@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fs = require('fs')
 
 // Menu category part
 const MenuCategoryModel = require("../Models/menu.model")
@@ -25,11 +26,19 @@ const MenuModel = require("../Models/menu.model")
 const createMenu = async (req, res) => {
     try {
         const menuData = req.body
+
+        if(req.file){
+            menuData.file = req.file.filename
+        }
+
+        console.log(menuData)
+
         const menu = new MenuModel({
             menuName: menuData.menuName,
             menuCategory: menuData.menuCategory,
             price: menuData.price,
             cost: menuData.cost,
+            file: menuData.file,
         })
         await menu.save()
 
@@ -79,35 +88,51 @@ const editMenu = async (req, res) => {
         const id = req.params.id;
         const updateMenu = req.body;
 
-        // Find the menu by id and update with the new data
+        const previousMenu = await MenuModel.findById(id);
+
+        if (req.file && previousMenu) {
+            const previousFile = previousMenu.file;
+            fs.unlink('./uploads/' + previousFile, (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Menu image deleted successfully');
+                }
+            });
+
+            updateMenu.file = req.file.filename;
+        }
+
+        console.log(updateMenu);
+
         const updatedMenu = await MenuModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+            { _id: id },
             {
                 $set: {
                     menuName: updateMenu.menuName,
                     menuCategory: updateMenu.menuCategory,
                     price: updateMenu.price,
                     cost: updateMenu.cost,
+                    file: updateMenu.file,
                 }
             },
             { new: true, runValidators: true }
         );
 
-        // If menu not found, return an error
         if (!updatedMenu) {
             return res.status(404).json({ message: 'Menu not found' });
         }
 
-        // Respond with the updated menu
         res.json({
             message: 'Update menu complete!',
-            menu: updatedMenu // Use consistent key name
+            menu: updatedMenu 
         });
         
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
 
 // ลบ Menu
 const deleteMenu = async (req, res) => {
@@ -117,10 +142,22 @@ const deleteMenu = async (req, res) => {
         if (!deletedMenu) {
             return res.status(404).json({ message: 'Menu not found' });
         }
+
+        if(deletedMenu.file){
+            fs.unlink('./uploads/'+deletedMenu.file,(err)=>{
+                if(err){
+                    console.log(err)
+                }else{
+                    console.log('Menu image deleted successfully')
+                }
+            })
+        }
         res.json({
             message: 'Menu deleted successfully',
             menu: deletedMenu
         });
+        
+        
     } catch (err) {
         res.status(500).send(err.message);
     }
