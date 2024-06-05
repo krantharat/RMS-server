@@ -31,7 +31,7 @@ const Menu = new mongoose.Schema({
         type: Number,
         required: true
     },
-    image: {
+    file: {
       type: String,
       // required: true,
     },

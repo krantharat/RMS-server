@@ -3,7 +3,7 @@ const menuController = require("../Controller/menu.controller")
 
 const router = express.Router()
 
-const {upload} = require('../middleware/upload')
+const { upload } = require('../middleware/upload')
 
 router.get("/", (req, res) => {
     res.send({
@@ -19,7 +19,7 @@ router.get("/allMenu", menuController.allMenu);
 
 router.get('/searchMenu', menuController.searchMenu);
 
-router.put('/editMenu/:id', menuController.editMenu);
+router.put('/editMenu/:id', upload, menuController.editMenu);
 
 router.delete('/deleteMenu/:id', menuController.deleteMenu);
 
