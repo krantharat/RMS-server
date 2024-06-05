@@ -30,7 +30,11 @@ const Menu = new mongoose.Schema({
     cost: {
         type: Number,
         required: true
-    }
+    },
+    image: {
+      type: String,
+      // required: true,
+    },
 });
 
 const MenuModel = mongoose.model('Menu',Menu) 
