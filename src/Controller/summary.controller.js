@@ -28,10 +28,11 @@ const addBill = async (req,res) => {
 //edit order each bill
 const editBill = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { billNumber } = req.params;
         const updateBill = req.body;
-        const updatedBill = await ScheduleModel.findByIdAndUpdate(
-            { _id: id },{
+        const updatedBill = await SummaryModel.findOneAndUpdate(
+            { billNumber },
+            {
                 $set: {
                     menu: updateBill.menu,
                     category: updateBill.category,
@@ -42,7 +43,6 @@ const editBill = async (req, res) => {
                     amount: updateBill.amount
                 }
             },
-            
             { new: true, runValidators: true }
         );
 
@@ -51,7 +51,7 @@ const editBill = async (req, res) => {
         }
         res.json({
             message: 'Bill updated successfully',
-            bill: updateBill
+            bill: updatedBill
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -61,14 +61,14 @@ const editBill = async (req, res) => {
 //delete each bill
 const deleteBill = async (req,res) => {
     try {
-        const {id} = req.params;
-        const deleteBill = await SummaryModel.findByIdAndDelete(id)
+        const { billNumber } = req.params;
+        const deleteBill = await SummaryModel.findOneAndDelete({ billNumber });
         if (!deleteBill) {
-            return res.status(404).json({ message: 'Bill not found'})
+            return res.status(404).json({ message: 'Bill not found' });
         }
         res.json({
             message: 'Bill deleted successfully',
-            bill : deleteBill
+            bill: deleteBill
         });
     }catch (error) { 
         res.status(500).send(error.message);
@@ -88,10 +88,10 @@ const getAllBill = async (req, res) => {
 }
 
 //ดูบิลแต่ละอัน
-const getBillById = async (req, res) => {
+const getBillByNumber = async (req, res) => {
     try {
-        const { id } = req.params;
-        const bill = await SummaryModel.findById(id)
+        const { billNumber } = req.params;
+        const bill = await SummaryModel.findOne({ billNumber })
             .populate("menu")
             .populate("category");
 
@@ -138,4 +138,4 @@ const searchDate = async (req,res) => {
 }
 
 
-module.exports = { addBill, editBill, deleteBill, getAllBill, getBillById, searchMenu, searchDate };
+module.exports = { addBill, editBill, deleteBill, getAllBill, getBillByNumber, searchMenu, searchDate };

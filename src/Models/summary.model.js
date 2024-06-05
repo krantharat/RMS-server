@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
+const CounterModel = require('./counter.model');
 
 const Summary = new mongoose.Schema({
 
+    billNumber: {
+        type: String,
+        unique: true,
+        require: true
+    },
     menu: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Menu", 
@@ -15,6 +21,7 @@ const Summary = new mongoose.Schema({
     date: {
         type: String,
         require: true,
+        unique: true,
         default: Date.now
     },
     qty: {
@@ -35,6 +42,26 @@ const Summary = new mongoose.Schema({
     }
 });
 
+Summary.pre('save', async function(next) {
+    const summary = this;
+    if (!summary.isNew) {   
+      return next();
+    }
+  
+    try {
+      const counter = await CounterModel.findByIdAndUpdate(
+        { _id: 'billNumber' },
+        { $inc: { sequenceValue: 1 } },
+        { new: true, upsert: true }
+      );
+      summary.billNumber = counter.sequenceValue;
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+
 const SummaryModel = mongoose.model('bill',Summary)
 
 module.exports = SummaryModel;
+

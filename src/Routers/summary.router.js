@@ -1,13 +1,13 @@
 const express = require("express")
 const router = express.Router();
-const {addBill, editBill, getAllBill, deleteBill, getBillById, searchMenu, searchDate} = require('../Controller/summary.controller')
+const {addBill, editBill, getAllBill, deleteBill, getBillByNumber, searchMenu, searchDate} = require('../Controller/summary.controller')
 
 //router
 router.post("/addBill", addBill);
-router.put("/editBill/:id", editBill);
-router.delete("/deleteBill", deleteBill);
+router.put("/editBill/:billNumber", editBill);
+router.delete("/deleteBill/:billNumber", deleteBill);
 router.get("/getAllBill", getAllBill);
-router.get("/getBillById/:id", getBillById);
+router.get("/getBillByNumber/:billNumber", getBillByNumber);
 router.get("/searchMenu/:name", searchMenu);
 router.get("/searchDate/:date", searchDate);
 
