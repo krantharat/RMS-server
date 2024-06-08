@@ -51,6 +51,6 @@ app.use("/api/employee", employeeRouter)
 app.use("/api/stock", stockRouter)
 
 //port listen
-app.listen(PORT, function () {
-    console.log("Restaurant server started on:" + PORT);
-});
+app.listen(PORT, () => {
+    console.log(`Example app listening at http://localhost:${PORT}`);
+  });

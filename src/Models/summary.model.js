@@ -37,9 +37,4 @@ const Summary = new mongoose.Schema({
 
 const SummaryModel = mongoose.model('bill',Summary)
 
-<<<<<<< Updated upstream
 module.exports = SummaryModel;
-=======
-module.exports = SummaryModel;
-
->>>>>>> Stashed changes
