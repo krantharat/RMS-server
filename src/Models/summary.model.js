@@ -1,88 +1,65 @@
 const mongoose = require('mongoose');
-const CounterModel = require('./counter.model');
+const MenuModel = require('./menu.model'); 
 
-const Summary = new mongoose.Schema({
-
+const SummarySchema = new mongoose.Schema({
     billNumber: {
         type: String,
-        unique: true,
-        require: true
-    },
-    menu: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Menu", 
-        require: true
-    },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "MenuCategory",
-        require: true
+        // unique: true,
+        required: true
     },
     date: {
         type: Date,
-        require: true,
+        required: true,
         unique: true,
         default: Date.now
     },
-    qty: {
-        type: Number,
-        require: true
-    },
-    price: {
-        type: Number,
-        require: true
-    },
-    cost: {
-        type: Number,
-        require: true
-    },
-    amount: {
-        type: Number,
-        require: true
-    },
     totalCosteEachBill: {
-      type: Number,
-      require: true
+        type: Number,
+        required: true
     },
     totalAmount: {
-      type: Number,
-      require:true
+        type: Number,
+        required: true
     },
     profit: {
-      type: Number,
-      require: true
+        type: Number,
+        required: false
     },
     saleTotal: {
-      type: Number,
-      require: true
+        type: Number,
+        required: false
     },
     totalCost: {
-      type: Number,
-      require: true
-    }
+        type: Number,
+        required: false
+    },
+    menuitem: [{
+        menu: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Menu'
+        },
+        menuCategory: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'MenuCategory'
+        },
+        qty: {
+            type: Number,
+            required: true
+        },
+        price: {
+            type: Number,
+            required: true
+        },
+        cost: {
+            type: Number,
+            required: true
+        },
+        amount: {
+            type: Number,
+            required: true
+        }
+    }]
 });
 
-Summary.pre('save', async function(next) {
-    const summary = this;
-    if (!summary.isNew) {   
-      return next();
-    }
-  
-    try {
-      const counter = await CounterModel.findByIdAndUpdate(
-        { _id: 'billNumber' },
-        { $inc: { sequenceValue: 1 } },
-        { new: true, upsert: true }
-      );
-      summary.billNumber = counter.sequenceValue;
-      next();
-    } catch (error) {
-      next(error);
-    }
-  });
-
-const SummaryModel = mongoose.model('bill',Summary)
-
+const SummaryModel = mongoose.model('Summary', SummarySchema);
 module.exports = SummaryModel;
-
-//เพิ่ม amount, total amount, total qty
