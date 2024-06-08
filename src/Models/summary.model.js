@@ -39,6 +39,14 @@ const Summary = new mongoose.Schema({
     amount: {
         type: Number,
         require: true
+    },
+    totalCost: {
+      type: Number,
+      require: true
+    },
+    totalAmount: {
+      type: Number,
+      require:true
     }
 });
 
@@ -65,3 +73,4 @@ const SummaryModel = mongoose.model('bill',Summary)
 
 module.exports = SummaryModel;
 
+//เพิ่ม amount, total amount, total qty
