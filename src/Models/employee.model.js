@@ -23,7 +23,7 @@ const Position = new mongoose.Schema({
 const PositionModel = mongoose.model('Position',Position) 
 module.exports = PositionModel;
 
-// Employee Schema
+//Employee Schema
 const Employee = new mongoose.Schema({
     employeeID: {
         type: String,
