@@ -19,7 +19,7 @@ const Summary = new mongoose.Schema({
         require: true
     },
     date: {
-        type: String,
+        type: Date,
         require: true,
         unique: true,
         default: Date.now
@@ -40,13 +40,25 @@ const Summary = new mongoose.Schema({
         type: Number,
         require: true
     },
-    totalCost: {
+    totalCosteEachBill: {
       type: Number,
       require: true
     },
     totalAmount: {
       type: Number,
       require:true
+    },
+    profit: {
+      type: Number,
+      require: true
+    },
+    saleTotal: {
+      type: Number,
+      require: true
+    },
+    totalCost: {
+      type: Number,
+      require: true
     }
 });
 

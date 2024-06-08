@@ -4,28 +4,46 @@ const MenuModel = require('../Models/menu.model');
 //create new bill
 const addBill = async (req,res) => {
     try{
-        const { menu, category, qty, cost, price, date, amount} = req.body;
-        const order = new SummaryModel ({
-            menu : menu,
-            category : category,
-            qty : qty,
-            cost : cost,
-            price : price,
-            date : date,
-            amount : amount
-        });
-        await order.save();
-        res.json({
-            message: 'order added successfully',
-            order : order
-        })
+            const { menu, category, qty, date, amount, totalCostEachBill, totalAmount, profit, saleTotal, totalCost } = req.body;
+    
+            // Fetch the menu document to get the price and cost
+            const menuDoc = await MenuModel.findById(menu);
+            if (!menuDoc) {
+                return res.status(404).json({ message: 'Menu not found' });
+            }
+    
+            // Fetch price and cost from the menu document
+            const price = menuDoc.price;
+            const cost = menuDoc.cost;
+    
+            const order = new SummaryModel({
+                menu: menu,
+                category: category,
+                qty: qty,
+                cost: cost,
+                price: price,
+                date: date,
+                // amount: amount,
+                // totalCostEachBill: totalCostEachBill,
+                // totalAmount: totalAmount,
+                // profit: profit,
+                // saleTotal: saleTotal,
+                // totalCost: totalCost
+            });
+    
+            await order.save();
+    
+            res.json({
+                message: 'Order added successfully',
+                order: order
+            });
 
     }catch (error) { 
         res.status(500).send(error.message);
     }
 }
 
-//edit order each bill
+//edit order each bill by billNumber
 const editBill = async (req, res) => {
     try {
         const { billNumber } = req.params;
@@ -58,7 +76,7 @@ const editBill = async (req, res) => {
     }
 };
 
-//delete each bill
+//delete each bill by billNumber
 const deleteBill = async (req,res) => {
     try {
         const { billNumber } = req.params;
@@ -75,7 +93,7 @@ const deleteBill = async (req,res) => {
     }
 }
 
-//ดูบิลทั้งหมด
+//get all bill
 const getAllBill = async (req, res) => {
     try {
         const bill = await SummaryModel.find();
@@ -87,7 +105,7 @@ const getAllBill = async (req, res) => {
       }
 }
 
-//ดูบิลแต่ละอัน
+//get each bill by billNumber
 const getBillByNumber = async (req, res) => {
     try {
         const { billNumber } = req.params;
