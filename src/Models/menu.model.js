@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 
-// Category Schema
-const Category = new mongoose.Schema({
-    categoryName: {
+// Menu Category Schema
+const MenuCategory = new mongoose.Schema({
+    menuCategoryName: {
         type: String,
         required: true
     },
 });
 
-const CategoryModel = mongoose.model('Category',Category) 
-module.exports = CategoryModel;
+const MenuCategoryModel = mongoose.model('MenuCategory',MenuCategory) 
+module.exports = MenuCategoryModel;
 
 
-// Menu Schema
+//Menu Schema
 const Menu = new mongoose.Schema({
     menuName: {
         type: String,
@@ -20,7 +20,7 @@ const Menu = new mongoose.Schema({
     },
     menuCategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"Category",
+        ref:"MenuCategory",
         required: true
     },
     price: {
@@ -30,7 +30,11 @@ const Menu = new mongoose.Schema({
     cost: {
         type: Number,
         required: true
-    }
+    },
+    file: {
+      type: String,
+      // required: true,
+    },
 });
 
 const MenuModel = mongoose.model('Menu',Menu) 

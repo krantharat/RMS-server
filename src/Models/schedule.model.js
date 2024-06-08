@@ -1,20 +1,5 @@
 const mongoose = require('mongoose');
 
-
-//position for schedule page
-// const PositionShift = new mongoose.Schema({
-//     positionShift: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: "Position",
-//         required: true
-//     }
-// });
-
-// const PositionShiftModel = mongoose.model('PositionShift',PositionShift) 
-// module.exports = PositionShiftModel;
-
-
-//other detail
 const Schedule = new mongoose.Schema({
     employee: {
         type: mongoose.Schema.Types.ObjectId,

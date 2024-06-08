@@ -11,6 +11,7 @@ const userRouter = require('./src/Routers/userRouter');
 const menuRouter = require('./src/Routers/menu.router');
 const summaryRouter = require('./src/Routers/summary.router');
 const employeeRouter = require('./src/Routers/employee.router')
+const stockRouter = require('./src/Routers/stock.router')
 
 require('dotenv').config();
 
@@ -47,6 +48,7 @@ app.use("/api/user", userRouter);
 app.use("/api/menu", menuRouter);
 app.use("/api/summary", summaryRouter);
 app.use("/api/employee", employeeRouter)
+app.use("/api/stock", stockRouter)
 
 //port listen
 app.listen(PORT, function () {

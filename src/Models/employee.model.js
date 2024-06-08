@@ -25,6 +25,11 @@ module.exports = PositionModel;
 
 // Employee Schema
 const Employee = new mongoose.Schema({
+    employeeID: {
+        type: String,
+        required: true,
+        unique: true
+    },
     firstName: {
         type: String,
         required: true
@@ -53,7 +58,8 @@ const Employee = new mongoose.Schema({
     },
     identificationNumber: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     location: {
         type: String,
@@ -64,7 +70,7 @@ const Employee = new mongoose.Schema({
         required: true
     },
     phone: {
-        type: Number,
+        type: String,
         required: true
     },
     startDate: {

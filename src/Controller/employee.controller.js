@@ -44,6 +44,7 @@ const createEmployee = async (req, res) => {
     try {
         const employeeData = req.body
         const employee = new EmployeeModel({
+            employeeID: employeeData.employeeID,
             firstName: employeeData.firstName,
             lastName: employeeData.lastName,
             nickName: employeeData.nickName,
@@ -84,21 +85,31 @@ const allEmployee = async (req, res) => {
 // search Employee (by Id)
 const searchEmployee = async (req, res) => {
     try {
-        const employee = await EmployeeModel.find()
-        .populate('position')
-        .populate('gender');
+        const employees = await EmployeeModel.find()
+            .populate('position')
+            .populate('gender');
 
-        const id = req.params.id
-    
-        // หา employee จาก id ที่ส่งมา 
-        const selectedIndex = employee.findIndex(employee => employee.id == id)
-    
-        res.json(employee[selectedIndex])
+        const { name, employeeID } = req.query;
+
+        let selectedEmployee;
+
+        if (name) {
+            selectedEmployee = employees.find(employee => employee.firstName === name);
+        } else if (employeeID) {
+            selectedEmployee = employees.find(employee => employee.employeeID === employeeID);
+        }
+
+        if (selectedEmployee) {
+            res.json(selectedEmployee);
+        } else {
+            res.status(404).send('Employee not found');
+        }
 
     } catch (err) {
         res.status(500).send(err.message);
     }
-}
+};
+
 
 // แก้ไขข้อมูล Employee
 const editEmployee = async (req, res) => {
@@ -111,6 +122,7 @@ const editEmployee = async (req, res) => {
             { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
             {
                 $set: {
+                    employeeID: updateEmployee.employeeID,
                     firstName: updateEmployee.firstName,
                     lastName: updateEmployee.lastName,
                     nickName: updateEmployee.nickName,
