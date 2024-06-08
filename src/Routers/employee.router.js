@@ -13,6 +13,8 @@ router.post("/createGender", employeeController.createGender);
 
 router.post("/createPosition", employeeController.createPosition);
 
+router.get("/allPosition", employeeController.allPosition);
+
 router.post("/createEmployee", employeeController.createEmployee);
 
 router.get("/allEmployee", employeeController.allEmployee);

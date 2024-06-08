@@ -36,6 +36,16 @@ const createPosition = async (req, res) => {
     }
 }
 
+const allPosition = async (req, res) => {
+    try {
+      const positions = await PositionModel.find();
+      
+      res.json(positions);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  };
+
 // Employee part
 const EmployeeModel = require("../Models/employee.model")
 
@@ -173,6 +183,7 @@ const deleteEmployee = async (req, res) => {
 module.exports = {
     createGender,
     createPosition,
+    allPosition,
     createEmployee,
     allEmployee,
     searchEmployee,
