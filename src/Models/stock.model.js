@@ -51,6 +51,10 @@ const Ingredient = new mongoose.Schema({
     cost: {
         type: Number,
         require: true,
+    },
+    notiAmount: {
+        type: Number,
+        require:true,
     }
 });
 

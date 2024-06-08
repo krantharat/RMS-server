@@ -51,7 +51,8 @@ const createIngredient = async (req, res) => {
             date: ingredientData.date,
             inStock: ingredientData.inStock,
             uomType:ingredientData.uomType,
-            cost: ingredientData.cost
+            cost: ingredientData.cost,
+            notiAmount: ingredientData.notiAmount
         })
         await ingredient.save()
 
@@ -131,7 +132,8 @@ const editIngredient = async (req, res) => {
                     ingredientName: editIngredient.ingredientName,
                     ingredientCategory: editIngredient.ingredientCategory,
                     uomType:editIngredient.uomType,
-                    cost: editIngredient.cost
+                    cost: editIngredient.cost,
+                    notiAmount: ingredientData.notiAmount
                 }
             },
             { new: true, runValidators: true }
