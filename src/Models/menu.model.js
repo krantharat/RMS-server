@@ -1,35 +1,22 @@
 const mongoose = require('mongoose');
 
-// Menu Category Schema
-const MenuCategory = new mongoose.Schema({
-    menuCategoryName: {
-        type: String,
-        required: true
-    },
-});
-
-const MenuCategoryModel = mongoose.model('MenuCategory',MenuCategory) 
-module.exports = MenuCategoryModel;
-
-
 //Menu Schema
 const Menu = new mongoose.Schema({
     menuName: {
         type: String,
-        required: true
+        // required: true
     },
     menuCategory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"MenuCategory",
-        required: true
+        type: String,
+        // required: true
     },
     price: {
         type: Number,
-        required: true
+        // required: true
     },
     cost: {
         type: Number,
-        required: true
+        // required: true
     },
     file: {
       type: String,

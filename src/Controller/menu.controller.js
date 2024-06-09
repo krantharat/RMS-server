@@ -1,55 +1,29 @@
 const mongoose = require('mongoose');
 const fs = require('fs')
 
-// Menu category part
-const MenuCategoryModel = require("../Models/menu.model")
-const createMenuCategory = async (req, res) => {
-    try {
-        const menuCategoryData = req.body
-        const menuCategory = new MenuCategoryModel({
-            menuCategoryName: menuCategoryData.menuCategoryName,
-        })
-        await menuCategory.save()
-
-        res.json({
-            message: 'add menu category complete',
-            menuCategory: menuCategory
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-
 // Menu part
 const MenuModel = require("../Models/menu.model")
 const createMenu = async (req, res) => {
     try {
-        const menuData = req.body
+        const menuData = req.body;
 
-        if(req.file){
-            menuData.file = req.file.filename
+        if (req.file) {
+            menuData.file = req.file.filename;
         }
 
-        console.log(menuData)
+        console.log(menuData);
 
-        const menu = new MenuModel({
-            menuName: menuData.menuName,
-            menuCategory: menuData.menuCategory,
-            price: menuData.price,
-            cost: menuData.cost,
-            file: menuData.file,
-        })
-        await menu.save()
+        const menu = new MenuModel(menuData);
+        await menu.save();
 
         res.json({
             message: 'add menu complete',
             menu: menu
-        })
+        });
     } catch (err) {
         res.status(500).send(err.message);
     }
-}
+};
 
 // ดู Menu ทั้งหมด
 const allMenu = async (req, res) => {
@@ -83,53 +57,97 @@ const searchMenu = async (req, res) => {
 }
 
 // แก้ไขข้อมูล Menu
+// const editMenu = async (req, res) => {
+//     try {
+//         const id = req.params.id;
+//         const updateMenu = req.body;
+
+//         const previousMenu = await MenuModel.findById(id);
+
+//         if (req.file && previousMenu) {
+//             const previousFile = previousMenu.file;
+//             fs.unlink('./uploads/' + previousFile, (err) => {
+//                 if (err) {
+//                     console.log(err);
+//                 } else {
+//                     console.log('Menu image deleted successfully');
+//                 }
+//             });
+
+//             updateMenu.file = req.file.filename;
+//         }
+
+//         console.log(updateMenu);
+
+//         const updatedMenu = await MenuModel.findOneAndUpdate(
+//             { _id: id },
+//             {
+//                 $set: {
+//                     menuName: updateMenu.menuName,
+//                     menuCategory: updateMenu.menuCategory,
+//                     price: updateMenu.price,
+//                     cost: updateMenu.cost,
+//                     file: updateMenu.file
+//                 }
+//             },
+//             { new: true, runValidators: true }
+//         );
+
+//         if (!updatedMenu) {
+//             return res.status(404).json({ message: 'Menu not found' });
+//         }
+
+//         res.json({
+//             message: 'Update menu complete!',
+//             menu: updatedMenu 
+//         });
+//     } catch (err) {
+//         res.status(500).send(err.message);
+//     }
+// };
+
 const editMenu = async (req, res) => {
     try {
         const id = req.params.id;
         const updateMenu = req.body;
 
-        const previousMenu = await MenuModel.findById(id);
+        console.log(`Received ID: ${id}`);
 
-        if (req.file && previousMenu) {
-            const previousFile = previousMenu.file;
-            fs.unlink('./uploads/' + previousFile, (err) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('Menu image deleted successfully');
-                }
-            });
-
-            updateMenu.file = req.file.filename;
+        const existingMenu = await MenuModel.findById(id);
+        if (!existingMenu) {
+            console.error('Menu not found with ID:', id);
+            return res.status(404).json({ message: 'Menu not found' });
         }
 
-        console.log(updateMenu);
+        console.log('Existing Menu:', existingMenu);
 
-        const updatedMenu = await MenuModel.findOneAndUpdate(
-            { _id: id },
+        const updatedMenu = await MenuModel.findByIdAndUpdate(
+            id,
             {
                 $set: {
                     menuName: updateMenu.menuName,
                     menuCategory: updateMenu.menuCategory,
                     price: updateMenu.price,
                     cost: updateMenu.cost,
-                    file: updateMenu.file,
+                    file: updateMenu.file
                 }
             },
             { new: true, runValidators: true }
         );
 
         if (!updatedMenu) {
+            console.error('Menu not found after update attempt with ID:', id);
             return res.status(404).json({ message: 'Menu not found' });
         }
 
         res.json({
-            message: 'Update menu complete!',
-            menu: updatedMenu 
+            message: 'Update Menu complete!',
+            menu: updatedMenu
         });
-        
+
     } catch (err) {
-        res.status(500).send(err.message);
+        console.error('Error updating menu:', err);
+        res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 };
 
@@ -164,7 +182,7 @@ const deleteMenu = async (req, res) => {
 }
 
 module.exports = {
-    createMenuCategory,
+    // createMenuCategory,
     createMenu,
     allMenu,
     searchMenu,

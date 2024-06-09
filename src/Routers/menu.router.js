@@ -11,8 +11,6 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/createMenuCategory", menuController.createMenuCategory);
-
 router.post("/createMenu", upload, menuController.createMenu);
 
 router.get("/allMenu", menuController.allMenu);
