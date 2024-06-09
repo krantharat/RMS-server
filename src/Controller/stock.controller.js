@@ -141,14 +141,14 @@ const deleteIngredient = async (req, res) => {
 const updateIngredient = async (req, res) => {
     try {
         const id = req.params.id;
-        const updateIngredient = req.body;
+        const { inStock } = req.body;
 
         const updatedIngredient = await IngredientModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+            { _id: id }, // Use _id because it's the key for MongoDB
             {
                 $set: {
-                    date: new Date(),
-                    inStock: updateIngredient.inStock,
+                    date: new Date(), // Set date to current date
+                    inStock: inStock,
                 }
             },
             { new: true, runValidators: true }
@@ -167,6 +167,7 @@ const updateIngredient = async (req, res) => {
         res.status(500).send(err.message);
     }
 };
+
 module.exports = {
     createIngredient,
     allIngredient,
