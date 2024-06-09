@@ -1,37 +1,14 @@
 const mongoose = require('mongoose');
 
-// UOM Schema
-const Uom = new mongoose.Schema({
-    uomType: {
-        type: String,
-        required: true
-    },
-});
-
-const UomModel = mongoose.model('Uom',Uom) 
-module.exports = UomModel;
-
-// Ingredient Category Schema
-const IngredientCategory = new mongoose.Schema({
-    ingredientCategoryName: {
-        type: String,
-        required: true
-    },
-});
-
-const IngredientCategoryModel = mongoose.model('IngredientCategory',IngredientCategory) 
-module.exports = IngredientCategoryModel;
-
 // Ingredient Schema
 const Ingredient = new mongoose.Schema({
     ingredientName: {
         type: String,
-        required: true
+        // required: true
     },
     ingredientCategory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"IngredientCategory",
-        required: true
+        type: String,
+        // required: true
     },
     date: {
         type: String,
@@ -40,21 +17,20 @@ const Ingredient = new mongoose.Schema({
     },
     inStock: {
         type: Number,
-        require: false,
+        // require: false,
         default: 0
     },
     uomType: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"Uom",
-        required: true
+        type: String,
+        // required: true
     },
     cost: {
         type: Number,
-        require: true,
+        // require: true,
     },
     notiAmount: {
         type: Number,
-        require:true,
+        // require:true,
     }
 });
 

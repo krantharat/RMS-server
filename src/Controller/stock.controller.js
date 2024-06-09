@@ -1,43 +1,5 @@
 const mongoose = require('mongoose');
 
-// Uom part
-const UomModel = require("../Models/stock.model")
-const createUom = async (req, res) => {
-    try {
-        const uomData = req.body
-        const uom = new UomModel({
-            uomType: uomData.uomType,
-        })
-        await uom.save()
-
-        res.json({
-            message: 'add Uom complete',
-            uom: uom
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-// IngredientCategory part
-const IngredientCategoryModel = require("../Models/stock.model")
-const createIngredientCategory = async (req, res) => {
-    try {
-        const ingredientCategoryData = req.body
-        const ingredientCategory = new IngredientCategoryModel({
-            ingredientCategoryName: ingredientCategoryData.ingredientCategoryName,
-        })
-        await ingredientCategory.save()
-
-        res.json({
-            message: 'add ingredient category complete',
-            ingredientCategory: ingredientCategory
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
 // Ingredient data part
 const IngredientModel = require("../Models/stock.model")
 
@@ -45,15 +7,7 @@ const IngredientModel = require("../Models/stock.model")
 const createIngredient = async (req, res) => {
     try {
         const ingredientData = req.body
-        const ingredient = new IngredientModel({
-            ingredientName: ingredientData.ingredientName,
-            ingredientCategory: ingredientData.ingredientCategory,
-            date: ingredientData.date,
-            inStock: ingredientData.inStock,
-            uomType:ingredientData.uomType,
-            cost: ingredientData.cost,
-            notiAmount: ingredientData.notiAmount
-        })
+        const ingredient = new IngredientModel(ingredientData)
         await ingredient.save()
 
         res.json({
@@ -124,16 +78,27 @@ const editIngredient = async (req, res) => {
         const id = req.params.id;
         const editIngredient = req.body;
 
-        // Find the Ingredient by id and update with the new data
-        const editedIngredient = await IngredientModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+        console.log(`Received ID: ${id}`);
+
+        const existingIngredient = await IngredientModel.findById(id);
+        if (!existingIngredient) {
+            console.error('Ingredient not found with ID:', id);
+            return res.status(404).json({ message: 'Ingredient not found' });
+        }
+
+        console.log('Existing Ingredient:', existingIngredient);
+
+        const editedIngredient = await IngredientModel.findByIdAndUpdate(
+            id,
             {
                 $set: {
                     ingredientName: editIngredient.ingredientName,
                     ingredientCategory: editIngredient.ingredientCategory,
-                    uomType:editIngredient.uomType,
+                    date: editIngredient.date,
+                    inStock: editIngredient.inStock,
+                    uomType: editIngredient.uomType,
                     cost: editIngredient.cost,
-                    notiAmount: ingredientData.notiAmount
+                    notiAmount: editIngredient.notiAmount
                 }
             },
             { new: true, runValidators: true }
@@ -147,7 +112,7 @@ const editIngredient = async (req, res) => {
             message: 'Edit Ingredient complete!',
             ingredient: editedIngredient
         });
-        
+
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -182,7 +147,7 @@ const updateIngredient = async (req, res) => {
             { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
             {
                 $set: {
-                    date: updateIngredient.date,
+                    date: new Date(),
                     inStock: updateIngredient.inStock,
                 }
             },
@@ -203,8 +168,6 @@ const updateIngredient = async (req, res) => {
     }
 };
 module.exports = {
-    createUom,
-    createIngredientCategory,
     createIngredient,
     allIngredient,
     searchIngredient,
