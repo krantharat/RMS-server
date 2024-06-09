@@ -1,112 +1,45 @@
-// Gender part
-const GenderModel = require("../Models/employee.model")
-const createGender = async (req, res) => {
-    try {
-        const genderData = req.body
-        const gender = new GenderModel({
-            genderType: genderData.genderType,
-        })
-        await gender.save()
+const EmployeeModel = require("../Models/employee.model");
 
-        res.json({
-            message: 'add gender complete',
-            gender: gender
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-// Position part
-const PositionModel = require("../Models/employee.model")
-const createPosition = async (req, res) => {
-    try {
-        const positionData = req.body
-        const position = new PositionModel({
-            position: positionData.position
-        })
-        await position.save()
-
-        res.json({
-            message: 'add position complete',
-            position: position
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-const allPosition = async (req, res) => {
-    try {
-      const positions = await PositionModel.find();
-      
-      res.json(positions);
-    } catch (err) {
-      res.status(500).send(err.message);
-    }
-  };
-
-// Employee part
-const EmployeeModel = require("../Models/employee.model")
-
-// สร้างข้อมูล Employee
+// Create Employee
 const createEmployee = async (req, res) => {
     try {
-        const employeeData = req.body
-        const employee = new EmployeeModel({
-            employeeID: employeeData.employeeID,
-            firstName: employeeData.firstName,
-            lastName: employeeData.lastName,
-            nickName: employeeData.nickName,
-            position: employeeData.position,
-            dateOfBirth: employeeData.dateOfBirth,
-            gender: employeeData.gender,
-            identificationNumber: employeeData.identificationNumber,
-            location: employeeData.location,
-            email: employeeData.email,
-            phone: employeeData.phone,
-            startDate: employeeData.startDate
-        })
-        await employee.save()
+        const employeeData = req.body;
+        const employee = new EmployeeModel(employeeData);
+        await employee.save();
 
         res.json({
-            message: 'add employee complete',
+            message: 'Employee created successfully',
             employee: employee
-        })
+        });
     } catch (err) {
-        res.status(500).send(err.message);
+        console.error('Error creating employee:', err);
+        res.status(500).json({ message: 'Internal server error', error: err.message });
     }
-}
+};
 
-// ดู Employee ทั้งหมด
+// Get All Employees
 const allEmployee = async (req, res) => {
-    try {
-        const employee = await EmployeeModel.find()
-        .populate('position')
-        .populate('gender');
-    
-        res.json(employee);
-  
-      } catch (err) {
-          res.status(500).send(err.message);
-      }
-}
-
-// search Employee (by Id)
-const searchEmployee = async (req, res) => {
     try {
         const employees = await EmployeeModel.find()
             .populate('position')
             .populate('gender');
 
-        const { name, employeeID } = req.query;
+        res.json(employees);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
 
+// Search Employee by ID or Name
+const searchEmployee = async (req, res) => {
+    try {
+        const { name, employeeID } = req.query;
         let selectedEmployee;
 
         if (name) {
-            selectedEmployee = employees.find(employee => employee.firstName === name);
+            selectedEmployee = await EmployeeModel.findOne({ firstName: name }).populate('position').populate('gender');
         } else if (employeeID) {
-            selectedEmployee = employees.find(employee => employee.employeeID === employeeID);
+            selectedEmployee = await EmployeeModel.findOne({ employeeID: employeeID }).populate('position').populate('gender');
         }
 
         if (selectedEmployee) {
@@ -120,16 +53,24 @@ const searchEmployee = async (req, res) => {
     }
 };
 
-
-// แก้ไขข้อมูล Employee
+// Edit Employee
 const editEmployee = async (req, res) => {
     try {
         const id = req.params.id;
         const updateEmployee = req.body;
 
-        // Find the menu by id and update with the new data
-        const updatedEmployee = await EmployeeModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+        console.log(`Received ID: ${id}`);
+
+        const existingEmployee = await EmployeeModel.findById(id);
+        if (!existingEmployee) {
+            console.error('Employee not found with ID:', id);
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        console.log('Existing Employee:', existingEmployee);
+
+        const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
+            id,
             {
                 $set: {
                     employeeID: updateEmployee.employeeID,
@@ -150,24 +91,28 @@ const editEmployee = async (req, res) => {
         );
 
         if (!updatedEmployee) {
+            console.error('Employee not found after update attempt with ID:', id);
             return res.status(404).json({ message: 'Employee not found' });
         }
 
         res.json({
             message: 'Update employee complete!',
-            menu: updatedEmployee 
+            employee: updatedEmployee 
         });
-        
+
     } catch (err) {
-        res.status(500).send(err.message);
+        console.error('Error updating employee:', err);
+        res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 };
 
-// ลบ Menu
+
+
+// Delete Employee
 const deleteEmployee = async (req, res) => {
     try {
-        const id = req.params.id; // รับข้อมูลมาเป็น String
-        const deletedEmployee = await EmployeeModel.findByIdAndDelete(id) // fundById จะแปลง String -> ObjectId ให้อัตโนมัติ
+        const id = req.params.id;
+        const deletedEmployee = await EmployeeModel.findByIdAndDelete(id);
         if (!deletedEmployee) {
             return res.status(404).json({ message: 'Employee not found' });
         }
@@ -181,12 +126,9 @@ const deleteEmployee = async (req, res) => {
 }
 
 module.exports = {
-    createGender,
-    createPosition,
-    allPosition,
     createEmployee,
     allEmployee,
     searchEmployee,
     editEmployee,
     deleteEmployee
-  };
+};
