@@ -3,6 +3,8 @@ const MenuModel = require('../Models/menu.model');
 
 //create new bill
 const addBill = async (req, res) => {
+    console.log(req.body);
+
     try {
         const {
             billNumber,
@@ -12,25 +14,47 @@ const addBill = async (req, res) => {
             menuitem
         } = req.body;
 
+        if (!menuitem || menuitem.length === 0) {
+            throw new Error('No menu items provided');
+        }
+
+        const menuItemsWithDetails = await Promise.all(menuitem.map(async item => {
+            const menuDetails = await MenuModel.findById(item.menu);
+
+            if (!menuDetails) {
+                throw new Error(`Menu item with ID ${item.menu} not found`);
+            }
+
+            return {
+                menu: item.menu,
+                category: menuDetails.menuCategory,
+                qty: item.qty,
+                price: menuDetails.price,
+                cost: menuDetails.cost,
+                amount: item.qty * menuDetails.price
+            };
+        }));
+
         const newBill = new SummaryModel({
             billNumber,
             date,
             totalCosteEachBill,
             totalAmount,
-            menuitem
+            menuitem: menuItemsWithDetails
         });
 
         await newBill.save();
 
         res.status(201).json({
-            message: 'Bill added Successfully',
+            message: 'Bill added successfully',
             bill: newBill,
         });
 
     } catch (error) {
         res.status(500).send(error.message);
     }
-}
+};
+
 
 //edit order each bill by id
 const editBill = async (req, res) => {
@@ -96,7 +120,7 @@ const getBillById = async (req, res) => {
         const { id } = req.params;
         const bill = await SummaryModel.findById(id)
             .populate('menuitem.menu')
-            .populate('menuitem.menuCategory');
+            // .populate('menuitem.menuCategory');
 
         if (!bill) {
             return res.status(404).json({ message: "Bill not found" });
@@ -109,10 +133,11 @@ const getBillById = async (req, res) => {
     }
 }
 
-//search menu
+// search menu
 const searchMenu = async (req, res) => {
     try {
         const menu = await MenuModel.find();
+        
         const { name } = req.query;
 
         const selectedIndex = menu.findIndex(menu => menu.menuName == name)
@@ -122,6 +147,44 @@ const searchMenu = async (req, res) => {
     } catch (err) {
         res.status(500).send(err.message);
     }
+}
+// const searchMenu = async (req, res) => {
+//     try {
+//         const menu = await MenuModel.find()
+//         .populate('menuCategory')
+        
+//         const {name} = req.query
+    
+//         // หา menu จาก id ที่ส่งมา 
+//         const selectedIndex = menu.findIndex(menu => menu.menuName == name)
+    
+//         res.json(menu[selectedIndex])
+
+//     } catch (err) {
+//         res.status(500).send(err.message);
+//     }
+// }
+
+// const searchMenu = async (req, res) => {
+//     try {
+//       const { name } = req.query;
+//       const menu = await MenuModel.find({ menuName: { $regex: name, $options: 'i' } }).populate('menuCategory');
+//       res.json(menu);
+//     } catch (err) {
+//       res.status(500).send(err.message);
+//     }
+//   };
+
+const allMenu = async (req, res) => {
+    try {
+        const menu = await MenuModel.find()
+        .populate('menuCategory')
+    
+        res.json(menu);
+  
+      } catch (err) {
+          res.status(500).send(err.message);
+      }
 }
 
 //search date

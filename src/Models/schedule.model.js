@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 
 const Schedule = new mongoose.Schema({
-    employee: {
+    firstName: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Employee", 
         required: true
     },
     position: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Position",
+        type: String,
         required: true
     },
     date: {

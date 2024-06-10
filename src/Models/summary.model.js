@@ -4,7 +4,7 @@ const MenuModel = require('./menu.model');
 const SummarySchema = new mongoose.Schema({
     billNumber: {
         type: String,
-        // unique: true,
+        unique: true,
         required: true
     },
     date: {
@@ -38,9 +38,9 @@ const SummarySchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Menu'
         },
-        menuCategory: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'MenuCategory'
+        category: {
+            type: String,
+            require: true
         },
         qty: {
             type: Number,
