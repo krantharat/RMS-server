@@ -6,15 +6,14 @@ const IngredientModel = require("../Models/stock.model")
 // สร้างข้อมูล Ingredient
 const createIngredient = async (req, res) => {
     try {
-        const ingredientData = req.body;
-        ingredientData.date = new Date().toISOString(); // Set date to current date in ISO format
-        const ingredient = new IngredientModel(ingredientData);
-        await ingredient.save();
+        const ingredientData = req.body
+        const ingredient = new IngredientModel(ingredientData)
+        await ingredient.save()
 
         res.json({
-            message: 'Add ingredient complete',
+            message: 'add ingredient complete',
             ingredient: ingredient
-        });
+        })
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -148,7 +147,7 @@ const updateIngredient = async (req, res) => {
             { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
             {
                 $set: {
-                    date: new Date().toISOString(), // Set date to current date in ISO format
+                    date: new Date(), // Set date to current date
                     inStock: inStock,
                 }
             },
@@ -160,7 +159,7 @@ const updateIngredient = async (req, res) => {
         }
 
         res.json({
-            message: 'Update ingredient complete!',
+            message: 'Update Ingredient complete!',
             ingredient: updatedIngredient
         });
         

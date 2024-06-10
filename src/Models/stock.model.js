@@ -13,7 +13,7 @@ const Ingredient = new mongoose.Schema({
     date: {
         type: String,
         require: false,
-        default: () => new Date().toISOString()
+        default: Date.now
     },
     inStock: {
         type: Number,
