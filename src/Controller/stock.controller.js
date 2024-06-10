@@ -6,18 +6,15 @@ const IngredientModel = require("../Models/stock.model")
 // สร้างข้อมูล Ingredient
 const createIngredient = async (req, res) => {
     try {
-        const ingredientData = req.body
-        const ingredient = new IngredientModel(ingredientData)
-        await ingredient.save()
-
-        res.json({
-            message: 'add ingredient complete',
-            ingredient: ingredient
-        })
+        const ingredientData = req.body;
+        const ingredient = new IngredientModel(ingredientData);
+        await ingredient.save();
+        res.json({ message: 'Add ingredient complete', ingredient });
     } catch (err) {
         res.status(500).send(err.message);
     }
-}
+};
+
 
 // ดูข้อมูล Ingredient ทั้งหมด
 const allIngredient = async (req, res) => {
@@ -76,64 +73,37 @@ const searchIngredientByDate = async (req, res) => {
 const editIngredient = async (req, res) => {
     try {
         const id = req.params.id;
-        const editIngredient = req.body;
+        const editData = req.body;
 
-        console.log(`Received ID: ${id}`);
-
-        const existingIngredient = await IngredientModel.findById(id);
-        if (!existingIngredient) {
-            console.error('Ingredient not found with ID:', id);
-            return res.status(404).json({ message: 'Ingredient not found' });
-        }
-
-        console.log('Existing Ingredient:', existingIngredient);
-
-        const editedIngredient = await IngredientModel.findByIdAndUpdate(
+        const ingredient = await IngredientModel.findByIdAndUpdate(
             id,
-            {
-                $set: {
-                    ingredientName: editIngredient.ingredientName,
-                    ingredientCategory: editIngredient.ingredientCategory,
-                    date: editIngredient.date,
-                    inStock: editIngredient.inStock,
-                    uomType: editIngredient.uomType,
-                    cost: editIngredient.cost,
-                    notiAmount: editIngredient.notiAmount
-                }
-            },
+            { $set: editData },
             { new: true, runValidators: true }
         );
 
-        if (!editedIngredient) {
+        if (!ingredient) {
             return res.status(404).json({ message: 'Ingredient not found' });
         }
 
-        res.json({
-            message: 'Edit Ingredient complete!',
-            ingredient: editedIngredient
-        });
-
+        res.json({ message: 'Edit Ingredient complete!', ingredient });
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
 
-// ลบ Ingredient
+// Delete Ingredient
 const deleteIngredient = async (req, res) => {
     try {
-        const id = req.params.id; // รับข้อมูลมาเป็น String
-        const deletedIngredient = await IngredientModel.findByIdAndDelete(id) // fundById จะแปลง String -> ObjectId ให้อัตโนมัติ
-        if (!deletedIngredient) {
+        const id = req.params.id;
+        const ingredient = await IngredientModel.findByIdAndDelete(id);
+        if (!ingredient) {
             return res.status(404).json({ message: 'Ingredient not found' });
         }
-        res.json({
-            message: 'Ingredient deleted successfully',
-            ingredient: deletedIngredient
-        });
+        res.json({ message: 'Ingredient deleted successfully', ingredient });
     } catch (err) {
         res.status(500).send(err.message);
     }
-}
+};
 
 // Ingredient stock part
 
@@ -141,32 +111,29 @@ const deleteIngredient = async (req, res) => {
 const updateIngredient = async (req, res) => {
     try {
         const id = req.params.id;
-        const updateIngredient = req.body;
+        const { inStock } = req.body;
 
-        const updatedIngredient = await IngredientModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+        const ingredient = await IngredientModel.findByIdAndUpdate(
+            id,
             {
                 $set: {
-                    date: new Date(), // Set date to current date
-                    inStock: inStock,
+                    date: new Date(),
+                    inStock,
                 }
             },
             { new: true, runValidators: true }
         );
 
-        if (!updatedIngredient) {
+        if (!ingredient) {
             return res.status(404).json({ message: 'Ingredient not found' });
         }
 
-        res.json({
-            message: 'Update Ingredient complete!',
-            ingredient: updatedIngredient
-        });
-        
+        res.json({ message: 'Update Ingredient complete!', ingredient });
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
 module.exports = {
     createIngredient,
     allIngredient,
