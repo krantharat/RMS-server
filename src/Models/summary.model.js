@@ -1,40 +1,65 @@
 const mongoose = require('mongoose');
+const MenuModel = require('./menu.model'); 
 
-const Summary = new mongoose.Schema({
-
-    menu: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Menu",
-        require: true
-    },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "MenuCategory",
-        require: true
+const SummarySchema = new mongoose.Schema({
+    billNumber: {
+        type: String,
+        unique: true,
+        required: true
     },
     date: {
-        type: String,
-        require: true,
+        type: Date,
+        required: true,
+        unique: true,
         default: Date.now
     },
-    qty: {
+    totalCosteEachBill: {
         type: Number,
-        require: true
+        required: true
     },
-    price: {
+    totalAmount: {
         type: Number,
-        require: true
+        required: true
     },
-    cost: {
+    profit: {
         type: Number,
-        require: true
+        required: false
     },
-    amount: {
+    saleTotal: {
         type: Number,
-        require: true
-    }
+        required: false
+    },
+    totalCost: {
+        type: Number,
+        required: false
+    },
+    menuitem: [{
+        menu: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Menu'
+        },
+        category: {
+            type: String,
+            require: true
+        },
+        qty: {
+            type: Number,
+            required: true
+        },
+        price: {
+            type: Number,
+            required: true
+        },
+        cost: {
+            type: Number,
+            required: true
+        },
+        amount: {
+            type: Number,
+            required: true
+        }
+    }]
 });
 
-const SummaryModel = mongoose.model('bill',Summary)
-
+const SummaryModel = mongoose.model('Summary', SummarySchema);
 module.exports = SummaryModel;
