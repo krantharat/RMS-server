@@ -33,21 +33,26 @@ const allIngredient = async (req, res) => {
 // ดู Ingredient รายอัน by name
 const searchIngredient = async (req, res) => {
     try {
-        const ingredient = await IngredientModel.find()
-        .populate('ingredientCategory')
-        .populate('uomType')
+        const ingredients = await IngredientModel.find()
+            .populate('ingredientCategory')
+            .populate('uomType');
         
-        const {name} = req.query
+        const { name } = req.query;
     
-        // หา ingredient จาก name ที่ส่งมา 
-        const selectedIndex = ingredient.findIndex(ingredient => ingredient.ingredientName == name)
-    
-        res.json(ingredient[selectedIndex])
+        // Find ingredient by name
+        const selectedIndex = ingredients.findIndex(ingredient => ingredient.ingredientName === name);
+
+        if (selectedIndex === -1) {
+            return res.status(404).json({ message: 'Ingredient not found' });
+        }
+
+        res.json(ingredients[selectedIndex]);
 
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).json({ message: 'An error occurred while fetching the ingredient', error: err.message });
     }
-}
+};
+
 
 // ดู Ingredient by date
 const searchIngredientByDate = async (req, res) => {
@@ -133,6 +138,7 @@ const updateIngredient = async (req, res) => {
         res.status(500).send(err.message);
     }
 };
+
 
 module.exports = {
     createIngredient,
