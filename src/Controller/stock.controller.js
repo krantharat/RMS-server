@@ -1,65 +1,20 @@
 const mongoose = require('mongoose');
 
-// Uom part
-const UomModel = require("../Models/stock.model")
-const createUom = async (req, res) => {
-    try {
-        const uomData = req.body
-        const uom = new UomModel({
-            uomType: uomData.uomType,
-        })
-        await uom.save()
-
-        res.json({
-            message: 'add Uom complete',
-            uom: uom
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-// IngredientCategory part
-const IngredientCategoryModel = require("../Models/stock.model")
-const createIngredientCategory = async (req, res) => {
-    try {
-        const ingredientCategoryData = req.body
-        const ingredientCategory = new IngredientCategoryModel({
-            ingredientCategoryName: ingredientCategoryData.ingredientCategoryName,
-        })
-        await ingredientCategory.save()
-
-        res.json({
-            message: 'add ingredient category complete',
-            ingredientCategory: ingredientCategory
-        })
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
 // Ingredient data part
 const IngredientModel = require("../Models/stock.model")
 
 // สร้างข้อมูล Ingredient
 const createIngredient = async (req, res) => {
     try {
-        const ingredientData = req.body
-        const ingredient = new IngredientModel({
-            ingredientName: ingredientData.ingredientName,
-            ingredientCategory: ingredientData.ingredientCategory,
-            date: ingredientData.date,
-            inStock: ingredientData.inStock,
-            uomType:ingredientData.uomType,
-            cost: ingredientData.cost,
-            notiAmount: ingredientData.notiAmount
-        })
-        await ingredient.save()
+        const ingredientData = req.body;
+        ingredientData.date = new Date().toISOString(); // Set date to current date in ISO format
+        const ingredient = new IngredientModel(ingredientData);
+        await ingredient.save();
 
         res.json({
-            message: 'add ingredient complete',
+            message: 'Add ingredient complete',
             ingredient: ingredient
-        })
+        });
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -124,16 +79,27 @@ const editIngredient = async (req, res) => {
         const id = req.params.id;
         const editIngredient = req.body;
 
-        // Find the Ingredient by id and update with the new data
-        const editedIngredient = await IngredientModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+        console.log(`Received ID: ${id}`);
+
+        const existingIngredient = await IngredientModel.findById(id);
+        if (!existingIngredient) {
+            console.error('Ingredient not found with ID:', id);
+            return res.status(404).json({ message: 'Ingredient not found' });
+        }
+
+        console.log('Existing Ingredient:', existingIngredient);
+
+        const editedIngredient = await IngredientModel.findByIdAndUpdate(
+            id,
             {
                 $set: {
                     ingredientName: editIngredient.ingredientName,
                     ingredientCategory: editIngredient.ingredientCategory,
-                    uomType:editIngredient.uomType,
+                    date: editIngredient.date,
+                    inStock: editIngredient.inStock,
+                    uomType: editIngredient.uomType,
                     cost: editIngredient.cost,
-                    notiAmount: ingredientData.notiAmount
+                    notiAmount: editIngredient.notiAmount
                 }
             },
             { new: true, runValidators: true }
@@ -147,7 +113,7 @@ const editIngredient = async (req, res) => {
             message: 'Edit Ingredient complete!',
             ingredient: editedIngredient
         });
-        
+
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -176,14 +142,14 @@ const deleteIngredient = async (req, res) => {
 const updateIngredient = async (req, res) => {
     try {
         const id = req.params.id;
-        const updateIngredient = req.body;
+        const { inStock } = req.body;
 
         const updatedIngredient = await IngredientModel.findOneAndUpdate(
-            { _id: id }, // ใช้ _id เพราะเป็น key ของ MongoDB
+            { _id: id }, // Use _id because it's the key for MongoDB
             {
                 $set: {
-                    date: updateIngredient.date,
-                    inStock: updateIngredient.inStock,
+                    date: new Date().toISOString(), // Set date to current date in ISO format
+                    inStock: inStock,
                 }
             },
             { new: true, runValidators: true }
@@ -194,7 +160,7 @@ const updateIngredient = async (req, res) => {
         }
 
         res.json({
-            message: 'Update Ingredient complete!',
+            message: 'Update ingredient complete!',
             ingredient: updatedIngredient
         });
         
@@ -202,9 +168,8 @@ const updateIngredient = async (req, res) => {
         res.status(500).send(err.message);
     }
 };
+
 module.exports = {
-    createUom,
-    createIngredientCategory,
     createIngredient,
     allIngredient,
     searchIngredient,

@@ -9,10 +9,6 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/createUom", stockController.createUom);
-
-router.post("/createIngredientCategory", stockController.createIngredientCategory);
-
 router.post("/createIngredient", stockController.createIngredient);
 
 router.get("/allIngredient", stockController.allIngredient);
