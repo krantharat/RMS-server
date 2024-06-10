@@ -6,14 +6,15 @@ const IngredientModel = require("../Models/stock.model")
 // สร้างข้อมูล Ingredient
 const createIngredient = async (req, res) => {
     try {
-        const ingredientData = req.body
-        const ingredient = new IngredientModel(ingredientData)
-        await ingredient.save()
+        const ingredientData = req.body;
+        ingredientData.date = new Date().toISOString(); // Set date to current date in ISO format
+        const ingredient = new IngredientModel(ingredientData);
+        await ingredient.save();
 
         res.json({
-            message: 'add ingredient complete',
+            message: 'Add ingredient complete',
             ingredient: ingredient
-        })
+        });
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -147,7 +148,7 @@ const updateIngredient = async (req, res) => {
             { _id: id }, // Use _id because it's the key for MongoDB
             {
                 $set: {
-                    date: new Date(), // Set date to current date
+                    date: new Date().toISOString(), // Set date to current date in ISO format
                     inStock: inStock,
                 }
             },
@@ -159,7 +160,7 @@ const updateIngredient = async (req, res) => {
         }
 
         res.json({
-            message: 'Update Ingredient complete!',
+            message: 'Update ingredient complete!',
             ingredient: updatedIngredient
         });
         
