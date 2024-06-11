@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 const Ingredient = new mongoose.Schema({
     ingredientName: {
         type: String,
-        // required: true
+        unique: true
     },
     ingredientCategory: {
         type: String,
-        // required: true
+        required: true
     },
     date: {
         type: String,
@@ -17,20 +17,20 @@ const Ingredient = new mongoose.Schema({
     },
     inStock: {
         type: Number,
-        // require: false,
+        require: false,
         default: 0
     },
     uomType: {
         type: String,
-        // required: true
+        required: true
     },
     cost: {
         type: Number,
-        // require: true,
+        require: true,
     },
     notiAmount: {
         type: Number,
-        // require:true,
+        require:true,
     }
 });
 

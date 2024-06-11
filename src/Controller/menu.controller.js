@@ -17,11 +17,15 @@ const createMenu = async (req, res) => {
         await menu.save();
 
         res.json({
-            message: 'add menu complete',
+            message: 'Add menu complete',
             menu: menu
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        if (err.code === 11000) { // ตรวจสอบ error code 11000 ซึ่งหมายถึง duplicate key error
+            res.status(400).json({ message: 'Menu name already exists' });
+        } else {
+            res.status(500).send(err.message);
+        }
     }
 };
 
@@ -55,56 +59,6 @@ const searchMenu = async (req, res) => {
         res.status(500).send(err.message);
     }
 }
-
-// แก้ไขข้อมูล Menu
-// const editMenu = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const updateMenu = req.body;
-
-//         const previousMenu = await MenuModel.findById(id);
-
-//         if (req.file && previousMenu) {
-//             const previousFile = previousMenu.file;
-//             fs.unlink('./uploads/' + previousFile, (err) => {
-//                 if (err) {
-//                     console.log(err);
-//                 } else {
-//                     console.log('Menu image deleted successfully');
-//                 }
-//             });
-
-//             updateMenu.file = req.file.filename;
-//         }
-
-//         console.log(updateMenu);
-
-//         const updatedMenu = await MenuModel.findOneAndUpdate(
-//             { _id: id },
-//             {
-//                 $set: {
-//                     menuName: updateMenu.menuName,
-//                     menuCategory: updateMenu.menuCategory,
-//                     price: updateMenu.price,
-//                     cost: updateMenu.cost,
-//                     file: updateMenu.file
-//                 }
-//             },
-//             { new: true, runValidators: true }
-//         );
-
-//         if (!updatedMenu) {
-//             return res.status(404).json({ message: 'Menu not found' });
-//         }
-
-//         res.json({
-//             message: 'Update menu complete!',
-//             menu: updatedMenu 
-//         });
-//     } catch (err) {
-//         res.status(500).send(err.message);
-//     }
-// };
 
 const editMenu = async (req, res) => {
     try {

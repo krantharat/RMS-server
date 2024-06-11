@@ -6,6 +6,15 @@ const IngredientModel = require("../Models/stock.model")
 // สร้างข้อมูล Ingredient
 const createIngredient = async (req, res) => {
     try {
+
+        const { ingredientName } = req.body;
+        
+        // Check ชื่อ ingredient ว่ามีใน database อยู่แล้วมั้ย
+        const existingIngredient = await IngredientModel.findOne({ ingredientName });
+        if (existingIngredient) {
+            return res.status(400).json({ message: 'Already have this ingredient in stock' });
+        }
+
         const ingredientData = req.body;
         const ingredient = new IngredientModel(ingredientData);
         await ingredient.save();
@@ -77,24 +86,36 @@ const searchIngredientByDate = async (req, res) => {
 // แก้ไขข้อมูล Ingredient
 const editIngredient = async (req, res) => {
     try {
-        const id = req.params.id;
-        const editData = req.body;
-
-        const ingredient = await IngredientModel.findByIdAndUpdate(
-            id,
-            { $set: editData },
-            { new: true, runValidators: true }
-        );
-
-        if (!ingredient) {
-            return res.status(404).json({ message: 'Ingredient not found' });
+      const id = req.params.id;
+      const { ingredientName } = req.body;
+  
+      // Find the current ingredient details
+      const currentIngredient = await IngredientModel.findById(id);
+      if (!currentIngredient) {
+        return res.status(404).json({ message: 'Ingredient not found' });
+      }
+  
+      if (ingredientName.trim() !== currentIngredient.ingredientName.trim()) {
+        const existingIngredient = await IngredientModel.findOne({ ingredientName: ingredientName.trim() });
+        if (existingIngredient) {
+          return res.status(400).json({ message: 'Already have this ingredient in stock' });
         }
-
-        res.json({ message: 'Edit Ingredient complete!', ingredient });
+      }
+  
+      const editData = req.body;
+  
+      const ingredient = await IngredientModel.findByIdAndUpdate(
+        id,
+        { $set: editData },
+        { new: true, runValidators: true }
+      );
+  
+      res.json({ message: 'Edit Ingredient complete!', ingredient });
     } catch (err) {
-        res.status(500).send(err.message);
+      res.status(500).send(err.message);
     }
-};
+  };
+  
 
 // Delete Ingredient
 const deleteIngredient = async (req, res) => {
@@ -117,6 +138,7 @@ const updateIngredient = async (req, res) => {
     try {
         const id = req.params.id;
         const { inStock } = req.body;
+        console.log(`Request received to update ingredient ${id} with inStock: ${inStock}`);
 
         const ingredient = await IngredientModel.findByIdAndUpdate(
             id,
@@ -133,11 +155,15 @@ const updateIngredient = async (req, res) => {
             return res.status(404).json({ message: 'Ingredient not found' });
         }
 
+        console.log(`Ingredient ${id} updated successfully to inStock: ${inStock}`);
         res.json({ message: 'Update Ingredient complete!', ingredient });
     } catch (err) {
+        console.error(`Error updating ingredient ${id}:`, err.message);
         res.status(500).send(err.message);
     }
 };
+
+
 
 
 module.exports = {

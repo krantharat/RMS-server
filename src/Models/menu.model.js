@@ -4,23 +4,24 @@ const mongoose = require('mongoose');
 const Menu = new mongoose.Schema({
     menuName: {
         type: String,
-        // required: true
+        required: true,
+        unique: true
     },
     menuCategory: {
         type: String,
-        // required: true
+        required: true
     },
     price: {
         type: Number,
-        // required: true
+        required: true
     },
     cost: {
         type: Number,
-        // required: true
+        required: true
     },
     file: {
       type: String,
-      // required: true,
+      required: true,
     },
 });
 
