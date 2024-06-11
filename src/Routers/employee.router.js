@@ -19,4 +19,6 @@ router.put('/editEmployee/:id', employeeController.editEmployee);
 
 router.delete('/deleteEmployee/:id', employeeController.deleteEmployee);
 
+router.get('/nextEmployeeID', employeeController.getNextEmployeeNumber);
+
 module.exports = router;

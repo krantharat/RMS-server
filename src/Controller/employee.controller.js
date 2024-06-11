@@ -1,9 +1,52 @@
 const EmployeeModel = require("../Models/employee.model");
 
 // Create Employee
+const getNextEmployeeNumber = async (req, res) => {
+    try {
+      const lastEmployee = await EmployeeModel.findOne().sort({ employeeID: -1 });
+      let nextEmployeeID = '0001';
+  
+      if (lastEmployee) {
+        const lastID = parseInt(lastEmployee.employeeID, 10);
+        nextEmployeeID = (lastID + 1).toString().padStart(4, '0');
+      }
+  
+      res.json({ nextEmployeeID });
+    } catch (error) {
+      console.error('Error fetching next employee ID:', error);
+      res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+  
 const createEmployee = async (req, res) => {
     try {
-        const employeeData = req.body;
+        const lastEmployee = await EmployeeModel.findOne().sort({ employeeID: -1 });
+        let newEmployeeID = '0001';
+        
+        if (lastEmployee) {
+            const lastID = parseInt(lastEmployee.employeeID, 10);
+            newEmployeeID = (lastID + 1).toString().padStart(4, '0');
+        }
+
+        const { identificationNumber } = req.body;
+
+        const existingIdentificationNumber = await EmployeeModel.findOne({ identificationNumber });
+        if (existingIdentificationNumber) {
+            return res.status(400).json({ message: 'Already have this identification number in the database' });
+        }
+
+        if (updateEmployee.identificationNumber.trim() !== existingEmployee.identificationNumber.trim()) {
+            const duplicateEmployee = await EmployeeModel.findOne({ identificationNumber: updateEmployee.identificationNumber.trim() });
+            if (duplicateEmployee) {
+                return res.status(400).json({ message: 'Already have this identificationNumber in database' });
+            }
+        }
+
+        const employeeData = {
+            ...req.body,
+            employeeID: newEmployeeID
+        };
+
         const employee = new EmployeeModel(employeeData);
         await employee.save();
 
@@ -69,6 +112,13 @@ const editEmployee = async (req, res) => {
 
         console.log('Existing Employee:', existingEmployee);
 
+        if (updateEmployee.identificationNumber.trim() !== existingEmployee.identificationNumber.trim()) {
+            const duplicateEmployee = await EmployeeModel.findOne({ identificationNumber: updateEmployee.identificationNumber.trim() });
+            if (duplicateEmployee) {
+                return res.status(400).json({ message: 'Already have this identificationNumber in database' });
+            }
+        }
+
         const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
             id,
             {
@@ -108,6 +158,7 @@ const editEmployee = async (req, res) => {
 
 
 
+
 // Delete Employee
 const deleteEmployee = async (req, res) => {
     try {
@@ -130,5 +181,6 @@ module.exports = {
     allEmployee,
     searchEmployee,
     editEmployee,
-    deleteEmployee
+    deleteEmployee,
+    getNextEmployeeNumber
 };

@@ -1,29 +1,5 @@
 const mongoose = require('mongoose');
 
-// // Gender Schema
-// const Gender = new mongoose.Schema({
-//     genderType: {
-//         type: String,
-//         required: true
-//     },
-// });
-
-// const GenderModel = mongoose.model('Gender',Gender) 
-// module.exports = GenderModel;
-
-
-// // Position Schema
-// const Position = new mongoose.Schema({
-//     position: {
-//         type: String,
-//         required: true
-//     }
-// });
-
-// const PositionModel = mongoose.model('Position',Position) 
-// module.exports = PositionModel;
-
-//Employee Schema
 const Employee = new mongoose.Schema({
   employeeID: {
     type: String,
@@ -41,7 +17,7 @@ const Employee = new mongoose.Schema({
   },
   position: {
     type: String,
-    // required: true
+    required: true
   },
   dateOfBirth: {
     type: String,
@@ -50,7 +26,7 @@ const Employee = new mongoose.Schema({
     type: String,
   },
   identificationNumber: {
-    type: String,  // Ensure this matches the data type from the frontend
+    type: String, 
     required: true,
     unique: true
   },
