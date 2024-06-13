@@ -30,6 +30,10 @@ const createEmployee = async (req, res) => {
 
         const { identificationNumber } = req.body;
 
+        if (!/^\d{13}$/.test(identificationNumber)) {
+            return res.status(400).json({ message: 'Identification number must be exactly 13 digits long' });
+        }
+
         const existingIdentificationNumber = await EmployeeModel.findOne({ identificationNumber });
         if (existingIdentificationNumber) {
             return res.status(400).json({ message: 'Already have this identification number in the database' });
