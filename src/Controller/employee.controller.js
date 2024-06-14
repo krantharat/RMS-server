@@ -20,38 +20,47 @@ const getNextEmployeeNumber = async (req, res) => {
   
 const createEmployee = async (req, res) => {
     try {
+      // หาพนักงานคนล่าสุดจากฐานข้อมูล โดยเรียงลำดับตาม employeeID จากมากไปน้อย
       const lastEmployee = await EmployeeModel.findOne().sort({ employeeID: -1 });
       let newEmployeeID = '0001';
       
+      // ถ้ามีพนักงานอยู่แล้ว จะใช้ employeeID ล่าสุดแล้วเพิ่ม 1 และแปลงเป็น string ที่มี 4 หลัก
       if (lastEmployee) {
         const lastID = parseInt(lastEmployee.employeeID, 10);
         newEmployeeID = (lastID + 1).toString().padStart(4, '0');
       }
   
+      // ดึง identificationNumber จาก request body
       const { identificationNumber } = req.body;
   
+      // ตรวจสอบว่า identificationNumber ต้องมีความยาวเท่ากับ 13 ตัวอักษร
       if (!/^\d{13}$/.test(identificationNumber)) {
         return res.status(400).json({ message: 'Identification number must be exactly 13 digits long' });
       }
   
+      // ตรวจสอบว่า identificationNumber นี้มีในฐานข้อมูลแล้วหรือไม่
       const existingIdentificationNumber = await EmployeeModel.findOne({ identificationNumber });
       if (existingIdentificationNumber) {
         return res.status(400).json({ message: 'Already have this identification number in the database' });
       }
   
+      // สร้างข้อมูลพนักงานใหม่
       const employeeData = {
         ...req.body,
         employeeID: newEmployeeID
       };
   
+      // บันทึกข้อมูลพนักงานใหม่ลงในฐานข้อมูล
       const employee = new EmployeeModel(employeeData);
       await employee.save();
   
+      // ส่ง response กลับไปยังไคลเอนต์
       res.json({
         message: 'Employee created successfully',
         employee: employee
       });
     } catch (err) {
+      // จัดการข้อผิดพลาดและส่ง response กลับไปยังไคลเอนต์
       console.error('Error creating employee:', err);
       res.status(500).json({ message: 'Internal server error', error: err.message });
     }

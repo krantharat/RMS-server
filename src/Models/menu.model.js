@@ -21,7 +21,7 @@ const Menu = new mongoose.Schema({
     },
     file: {
       type: String,
-      required: true,
+    //   required: true,
     },
 });
 
