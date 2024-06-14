@@ -20,49 +20,43 @@ const getNextEmployeeNumber = async (req, res) => {
   
 const createEmployee = async (req, res) => {
     try {
-        const lastEmployee = await EmployeeModel.findOne().sort({ employeeID: -1 });
-        let newEmployeeID = '0001';
-        
-        if (lastEmployee) {
-            const lastID = parseInt(lastEmployee.employeeID, 10);
-            newEmployeeID = (lastID + 1).toString().padStart(4, '0');
-        }
-
-        const { identificationNumber } = req.body;
-
-        if (!/^\d{13}$/.test(identificationNumber)) {
-            return res.status(400).json({ message: 'Identification number must be exactly 13 digits long' });
-        }
-
-        const existingIdentificationNumber = await EmployeeModel.findOne({ identificationNumber });
-        if (existingIdentificationNumber) {
-            return res.status(400).json({ message: 'Already have this identification number in the database' });
-        }
-
-        if (updateEmployee.identificationNumber.trim() !== existingEmployee.identificationNumber.trim()) {
-            const duplicateEmployee = await EmployeeModel.findOne({ identificationNumber: updateEmployee.identificationNumber.trim() });
-            if (duplicateEmployee) {
-                return res.status(400).json({ message: 'Already have this identificationNumber in database' });
-            }
-        }
-
-        const employeeData = {
-            ...req.body,
-            employeeID: newEmployeeID
-        };
-
-        const employee = new EmployeeModel(employeeData);
-        await employee.save();
-
-        res.json({
-            message: 'Employee created successfully',
-            employee: employee
-        });
+      const lastEmployee = await EmployeeModel.findOne().sort({ employeeID: -1 });
+      let newEmployeeID = '0001';
+      
+      if (lastEmployee) {
+        const lastID = parseInt(lastEmployee.employeeID, 10);
+        newEmployeeID = (lastID + 1).toString().padStart(4, '0');
+      }
+  
+      const { identificationNumber } = req.body;
+  
+      if (!/^\d{13}$/.test(identificationNumber)) {
+        return res.status(400).json({ message: 'Identification number must be exactly 13 digits long' });
+      }
+  
+      const existingIdentificationNumber = await EmployeeModel.findOne({ identificationNumber });
+      if (existingIdentificationNumber) {
+        return res.status(400).json({ message: 'Already have this identification number in the database' });
+      }
+  
+      const employeeData = {
+        ...req.body,
+        employeeID: newEmployeeID
+      };
+  
+      const employee = new EmployeeModel(employeeData);
+      await employee.save();
+  
+      res.json({
+        message: 'Employee created successfully',
+        employee: employee
+      });
     } catch (err) {
-        console.error('Error creating employee:', err);
-        res.status(500).json({ message: 'Internal server error', error: err.message });
+      console.error('Error creating employee:', err);
+      res.status(500).json({ message: 'Internal server error', error: err.message });
     }
-};
+  };
+  
 
 // Get All Employees
 const allEmployee = async (req, res) => {
